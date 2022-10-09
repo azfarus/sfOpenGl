@@ -16,52 +16,91 @@
 using namespace std;
 bool running;
 
+void pushVectors(vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c) {
+	v.push_back(a.x);
+	v.push_back(a.y);
+	v.push_back(a.z);
+	v.push_back(b.x);
+	v.push_back(b.y);
+	v.push_back(b.z);
+	v.push_back(c.x);
+	v.push_back(c.y);
+	v.push_back(c.z);
+
+}
+
 void pushvals(vector<float>& v) {
    // z = sin(x) + sin(y)
+	v.clear();
 
-	for (float x = -10; x < 10; x += .2) {
-		
-			v.push_back(x);
-			v.push_back(0);
-			v.push_back(0);
-			v.push_back(1);
-			v.push_back(0);
-			v.push_back(0);
-		
-	}
-
-	for (float x = -10; x < 10; x += .2) {
-
-		v.push_back(0);
-		v.push_back(x);
+	/*for (float i = 10; i > -10; i -= .2) {
+		v.push_back(i);
 		v.push_back(0);
 		v.push_back(0);
 		v.push_back(1);
 		v.push_back(0);
-
+		v.push_back(0);
 	}
 
-	for (float x = -10; x < 10; x += .2) {
-
+	for (float i = 10; i > -10; i -= .2) {
 		v.push_back(0);
-		v.push_back(0);
-		v.push_back(x);
+		v.push_back(i);
 		v.push_back(0);
 		v.push_back(0);
 		v.push_back(1);
-
+		v.push_back(0);
 	}
 
-	for (float x = -8.999; x < 9; x += .02) {
-		for (float y = -3.999; y < 4; y += .02) {
-			v.push_back(x);
-			v.push_back(y);
-			v.push_back(sin(x) + sin(y));
-			v.push_back(1);
-			v.push_back(1);
-			v.push_back(1);	
+	for (float i = 10; i > -10; i -= .2) {
+		v.push_back(0);
+		v.push_back(0);
+		v.push_back(i);
+		v.push_back(0);
+		v.push_back(0);
+		v.push_back(1);
+	}*/
+	const float factor = (20.0 / 500);
+	for (float x = -10; x < 10; x +=factor ) {
+		for (float y =-10 ; y <10 ; y +=factor ) {
+			
+			glm::vec3 vertex[4];
+			float arrx[] = { factor , 0 , factor , 0 };
+			float arry[] = { factor , factor , 0 , 0 };
+			float m, n;
+			for (int i = 0; i < 4; i++) {
+
+				
+				m = x + arrx[i];
+				n = y + arry[i];
+				vertex[i] = glm::vec3(m, n, asin(sin(m)+sin(n)));
+			}
+			glm::vec3 vex01, vex02, vex31, vex32 , cp0 , cp3 ,color;
+			color = glm::vec3(1, 1, 1);
+			vex01 = vertex[1] - vertex[0];
+			vex02 = vertex[2] - vertex[0];
+			vex31 = vertex[1] - vertex[3];
+			vex32 = vertex[2] - vertex[3];
+
+			cp0 = glm::cross(vex31, vex32);
+			cp3 = glm::cross(vex02, vex01);
+			cp0 = glm::normalize(cp0);
+			cp3 = glm::normalize(cp3);
+
+			pushVectors(v, vertex[0], color, cp0);
+			pushVectors(v, vertex[1], color, cp0);
+			pushVectors(v, vertex[2], color, cp0);
+
+			pushVectors(v, vertex[3], color, cp3);
+			pushVectors(v, vertex[1], color, cp3);
+			pushVectors(v, vertex[2], color, cp3);
+
+
+			
 		}
 	}
+
+	
+	
 }
 
 int main() {
@@ -87,10 +126,10 @@ int main() {
 
 	glm::mat4  trans = glm::mat4(1.0f);
 	glm::mat4  id = glm::mat4(1.0f);
-	glm::mat4 proj = glm::perspective<float>(glm::radians(65.0), 1280.0 / 960.0f, .25, 40);
+	glm::mat4 proj = glm::perspective<float>(glm::radians(25.0), 1280.0 / 960.0f, .25,40);
 	glm::mat4 view =  glm::lookAt(
 		glm::vec3(10.0f, 10.0f,10.0f ),
-		glm::vec3(0.4f, 0.0f, -0.5f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f)
 	);
 
@@ -117,7 +156,7 @@ int main() {
 	};
 
 	GLuint elements[] = {
-		  2 , 3,  7,
+  2 , 3,  7,
   2  ,8 , 3,
   4 , 5,  6,
   5, 4 , 9,
@@ -188,6 +227,7 @@ int main() {
 
 	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 	GLint colorAttrib = glGetAttribLocation(shaderProgram, "colour");
+	GLint normalAttrib = glGetAttribLocation(shaderProgram, "normal");
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
 	GLint viewU = glGetUniformLocation(shaderProgram, "view");
@@ -195,6 +235,8 @@ int main() {
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 
+	
+
 
 	
 
@@ -202,40 +244,34 @@ int main() {
 	
 		
 
-	
 
-	cout << glGetError() << endl;
 	float i = 0 , j = 0 , k = 0;
 	while (running)
 	{
-		//win.clear();
-
 	
-		//Sleep(500);
 
 		
-		glBufferData(GL_ARRAY_BUFFER, graph.size(), points, GL_STATIC_DRAW);
-
-		
-		
-		
-		
-
+		glBufferData(GL_ARRAY_BUFFER, graph.size()*sizeof(float), points, GL_STATIC_DRAW);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 		
 
 		
-		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), 0);
 		glEnableVertexAttribArray(posAttrib);
 
-		glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(colorAttrib);
+
+		glVertexAttribPointer(normalAttrib, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(normalAttrib);
 
 		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
 		glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
 
-		glDrawArrays(GL_POINTS, 0, graph.size());
+		glDrawArrays(GL_TRIANGLES, 0, graph.size());
 		//glDrawElements(GL_TRIANGLE_STRIP, sizeof(elements)/sizeof(GLuint), GL_UNSIGNED_INT, 0);
+		
+		
 		sf::Event winEvent;
 		while (win.pollEvent(winEvent)) {
 			if (winEvent.type == sf::Event::Closed) {
