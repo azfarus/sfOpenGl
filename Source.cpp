@@ -29,39 +29,14 @@ void pushVectors(vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c) {
 
 }
 
-void pushvals(vector<float>& v) {
+void pushvals(vector<float>& v ,float init_x , float fin_x ,float init_y , float fin_y, float sharpness) {
    // z = sin(x) + sin(y)
 	v.clear();
-
-	/*for (float i = 10; i > -10; i -= .2) {
-		v.push_back(i);
-		v.push_back(0);
-		v.push_back(0);
-		v.push_back(1);
-		v.push_back(0);
-		v.push_back(0);
-	}
-
-	for (float i = 10; i > -10; i -= .2) {
-		v.push_back(0);
-		v.push_back(i);
-		v.push_back(0);
-		v.push_back(0);
-		v.push_back(1);
-		v.push_back(0);
-	}
-
-	for (float i = 10; i > -10; i -= .2) {
-		v.push_back(0);
-		v.push_back(0);
-		v.push_back(i);
-		v.push_back(0);
-		v.push_back(0);
-		v.push_back(1);
-	}*/
-	const float factor = (20.0 / 500);
-	for (float x = -10; x < 10; x +=factor ) {
-		for (float y =-10 ; y <10 ; y +=factor ) {
+	
+	
+	const float factor = (abs(fin_x-init_x) / sharpness);
+	for (float x = init_x; x < fin_x; x +=factor ) {
+		for (float y =init_y ; y <fin_y ; y +=factor ) {
 			
 			glm::vec3 vertex[4];
 			float arrx[] = { factor , 0 , factor , 0 };
@@ -103,13 +78,26 @@ void pushvals(vector<float>& v) {
 	
 }
 
-int main() {
+GLuint shaderSet() {						//Compile and bind the shaders
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vertexSource, NULL);
+	glCompileShader(vertexShader);
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
+	glCompileShader(fragmentShader);
 
 
 
-	
+	GLuint shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+	glUseProgram(shaderProgram);
 
+	return shaderProgram;
+}
 
+sf::ContextSettings windowInit() {
 	sf::ContextSettings set;
 	set.majorVersion = 3;
 	set.minorVersion = 2;
@@ -118,6 +106,18 @@ int main() {
 	set.depthBits = 24;
 	set.stencilBits = 16;
 
+	return set;
+}
+
+int main() {
+
+
+
+	
+
+
+	
+	sf::ContextSettings set = windowInit();
 	sf::RenderWindow win(sf::VideoMode(1280, 960), "LOL",sf::Style::Close, set);
 	running = win.isOpen();
 
@@ -144,7 +144,7 @@ int main() {
 
 	float* points;
 	vector<float> graph;
-	pushvals(graph);
+	pushvals(graph , -5 , 5, 0 , 10 ,150);
 
 	points = &graph[0];
 	
@@ -152,33 +152,14 @@ int main() {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	GLuint vertexShader =glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexSource, NULL);
-	glCompileShader(vertexShader);
-
-	
-
-
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
-	glCompileShader(fragmentShader);
-
-	
-
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	glUseProgram(shaderProgram);
+	GLuint shaderProgram = shaderSet();
 
 	
 	GLuint vb;
 	glGenBuffers(1, &vb);
 	glBindBuffer(GL_ARRAY_BUFFER, vb);
 
-	GLuint ebo;
-	glGenBuffers(1, &ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	
 	
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_PROGRAM_POINT_SIZE);
@@ -228,7 +209,7 @@ int main() {
 		glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
 
 		glDrawArrays(GL_TRIANGLES, 0, graph.size());
-		//glDrawElements(GL_TRIANGLE_STRIP, sizeof(elements)/sizeof(GLuint), GL_UNSIGNED_INT, 0);
+		
 		
 		
 		sf::Event winEvent;
@@ -240,7 +221,7 @@ int main() {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
 				
 				trans = glm::rotate(trans, glm::radians(.5f), glm::vec3(0.0f, 0.0f, 1.0f));
-				//trans = glm::rotate(trans, glm::radians(.5f), glm::vec3(0.0f, 1.0f, 0.0f));
+				
 				
 			}
 
