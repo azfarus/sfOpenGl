@@ -138,50 +138,9 @@ int main() {
 
 	 
 
-	float triangle[] = {
-		// front
-	    0, - 0.525731 , 0.850651,  0,0,1,
-  0.850651  ,0,  0.525731,	1,0,1,
-  0.850651  ,0, - 0.525731,	0,0,1,
- - 0.850651 , 0, - 0.525731,	0,1,1,
- - 0.850651,  0,  0.525731,	0,1,1,
- - 0.525731  ,0.850651  ,0,	1,0,1,
-  0.525731  ,0.850651  ,0,	0,0,1,
-  0.525731 ,- 0.850651  ,0,	1,0,1,
- - 0.525731 ,- 0.850651,  0,	0,0,1,
-  0, - 0.525731 ,- 0.850651,	1,0,1,
-  0 , 0.525731, - 0.850651,	0,1,1,
-  0  ,0.525731  ,0.850651,	1,0,1
-		
-	};
+	
 
-	GLuint elements[] = {
-  2 , 3,  7,
-  2  ,8 , 3,
-  4 , 5,  6,
-  5, 4 , 9,
-  7 , 6 , 12,
-  6  ,7 , 11,
-  10 , 11 , 3,
-  11 , 10,  4,
-  8 , 9 , 10,
-  9 , 8 , 1,
-  12 , 1,  2,
-  1,  12,  5,
-  7 , 3  ,11,
-  2 , 7 , 12,
-  4 , 6  ,11,
-  6 , 5,  12,
-  3 , 8 , 10
-,  8 , 2 , 1,
-  4 , 10,  9,
-  5 , 9 , 1
-		
-	};
 
-	for (int i = 0; i < sizeof(elements) / sizeof(GLuint); i++) {
-		elements[i]--;
-	}
 
 	float* points;
 	vector<float> graph;
@@ -235,7 +194,14 @@ int main() {
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 
-	
+	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), 0);
+	glEnableVertexAttribArray(posAttrib);
+
+	glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(colorAttrib);
+
+	glVertexAttribPointer(normalAttrib, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(normalAttrib);
 
 
 	
@@ -252,18 +218,11 @@ int main() {
 
 		
 		glBufferData(GL_ARRAY_BUFFER, graph.size()*sizeof(float), points, GL_STATIC_DRAW);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
+		
 		
 
 		
-		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), 0);
-		glEnableVertexAttribArray(posAttrib);
-
-		glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(colorAttrib);
-
-		glVertexAttribPointer(normalAttrib, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(normalAttrib);
+		
 
 		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
 		glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
