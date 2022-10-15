@@ -145,9 +145,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="StandardFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="fragmentShader.h" />
+    <ClInclude Include="buffer_objects.h" />
+    <ClInclude Include="Shapes.h" />
+    <ClInclude Include="StandardFunctions.h" />
     <ClInclude Include="vertexShader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
