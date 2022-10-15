@@ -24,7 +24,7 @@ int main() {
 
 	glm::mat4  trans = glm::mat4(1.0f);
 	glm::mat4  id = glm::mat4(1.0f);
-	glm::mat4 proj = glm::perspective<float>(glm::radians(25.0), 1280.0 / 960.0f, .25,40);
+	glm::mat4 proj = glm::perspective<float>(glm::radians(75.0), 1280.0 / 960.0f, .25,40);
 	glm::mat4 view =  glm::lookAt(
 		glm::vec3(10.0f, 10.0f,10.0f ),
 		glm::vec3(0.0f, 0.0f, 0.0f),
@@ -56,22 +56,22 @@ int main() {
 	b.bind();
 
 	
+	EBO e;
+	e.bind();
 	
-	
-	
-
 
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
 	GLint viewU = glGetUniformLocation(shaderProgram, "view");
+	GLint camera = glGetUniformLocation(shaderProgram, "camera");
 
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 
 
 
-	attribute pos(shaderProgram , "position" , 0), 
-		col(shaderProgram, "colour", 3), 
+	attribute pos(shaderProgram, "position", 0),
+		col(shaderProgram, "colour", 3),
 		norm(shaderProgram, "normal", 6);
 
 	pos.enable();
@@ -79,34 +79,34 @@ int main() {
 	norm.enable();
 
 
-	sphere s;
+	sphere s(3 , transformation), s2(2 , transformation);
 
 	
 
-	/// 
 	
-		
 
 
-	float i = 0 , j = 0 , k = 0;
+	float i = 0 , j = 0 , k = 0 , theta = 0;
 	while (running)
 	{
 	
 
 		
-		//glBufferData(GL_ARRAY_BUFFER, graph.size()*sizeof(float), points, GL_STATIC_DRAW);
-		
-		
+	
+		glm::vec3 cam(100 * cos(theta), 100 * sin(theta), 100*(sin(theta)+cos(theta)));
+		glUniform3fv(camera, 1, glm::value_ptr(cam));
 
-		
-		
-
-		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
-		glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
-
-		//glDrawArrays(GL_TRIANGLES, 0, graph.size());
-		
+		s.position( 0, 0, 0);
 		s.draw();
+		s2.position(10 * cos(theta), 10 * sin(theta), 0);
+		theta += .001;
+		s2.draw();
+		
+		
+		glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+		//glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
+		
+		
 		
 		sf::Event winEvent;
 		while (win.pollEvent(winEvent)) {

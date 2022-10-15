@@ -25,6 +25,18 @@ public:
 	}
 };
 
+class EBO {
+	GLuint i;
+public:
+	EBO() {
+		glGenBuffers(1, &i);
+	}
+	void bind() {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, i);
+		
+	}
+};
+
 
 class attribute {
 	GLint i;
