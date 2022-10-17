@@ -18,12 +18,21 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StandardFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vertexShader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="fragmentShader.h">
+    <ClInclude Include="StandardFunctions.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="buffer_objects.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shapes.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,36 +1,21 @@
-#define GLEW_STATIC
-
-#include <GL/glew.h>
-#include <SFML/Graphics.hpp>
-#include<SFML/Window.hpp>
-#include<SFML/OpenGL.hpp>
-#include<glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include<iostream>
-#include"vertexShader.h"
-#include"fragmentShader.h"
-#include<Windows.h>
-
+#include "StandardFunctions.h"
+#include"buffer_objects.h"
+#include"Shapes.h"
 
 using namespace std;
 bool running;
+
+
 
 int main() {
 
 
 
+	
 
 
-
-	sf::ContextSettings set;
-	set.majorVersion = 3;
-	set.minorVersion = 2;
-	set.antialiasingLevel = 8;
-	set.attributeFlags = sf::ContextSettings::Core;
-	set.depthBits = 24;
-	set.stencilBits = 16;
-
+	
+	sf::ContextSettings set = windowInit();
 	sf::RenderWindow win(sf::VideoMode(1280, 960), "LOL",sf::Style::Close, set);
 	running = win.isOpen();
 
@@ -39,112 +24,147 @@ int main() {
 
 	glm::mat4  trans = glm::mat4(1.0f);
 	glm::mat4  id = glm::mat4(1.0f);
+	glm::mat4 proj = glm::perspective<float>(glm::radians(75.0), 1280.0 / 960.0f, .25,40);
+	glm::mat4 view =  glm::lookAt(
+		glm::vec3(10.0f, 10.0f,10.0f ),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 1.0f)
+	);
+
 	
 	
 
 	 
 
-	float triangle[] = {
-	 0.5f,  0.5f, 0 , 1.0f, 0.0f, 0.0f, // Top-left
-	-0.5f,  0.5f, 0 , 0.0f, 1.0f, 0.0f, // Top-right
-	 0.5f, -0.5f, 0 , 0.0f, 0.0f, 1.0f, // Bottom-right
-	-0.5f, -0.5f, 0 , 1.0f, 1.0f, 1.0f,
-	  1.0f, 1.0f, 0 , 1.0f, 1.0f, 1.0f
-		
-	};
-
-	GLuint elements[] = {
-		0,1,2,
-		2,3,1,
-		2,4,0
-	};
-	
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	GLuint vertexShader =glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexSource, NULL);
-	glCompileShader(vertexShader);
-
 	
 
 
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
-	glCompileShader(fragmentShader);
+
+	float* points;
+	vector<float> graph;
+	pushvals(graph , -5 , 5, 0 , 10 ,150);
+
+	points = &graph[0];
+	
+	VAO a;
+	a.bind();
+
+	GLuint shaderProgram = shaderSet();
 
 	
-
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	glUseProgram(shaderProgram);
+	VBO b;
+	b.bind();
 
 	
-
+	EBO e;
+	e.bind();
 	
 
-	
-
-	GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-	GLint colorAttrib = glGetAttribLocation(shaderProgram, "colour");
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
+	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
+	GLint viewU = glGetUniformLocation(shaderProgram, "view");
+	GLint camera = glGetUniformLocation(shaderProgram, "camera");
+
+	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 
 
+
+	attribute pos(shaderProgram, "position", 0),
+		col(shaderProgram, "colour", 3),
+		norm(shaderProgram, "normal", 6);
+
+	pos.enable();
+	col.enable();
+	norm.enable();
+
+
+	sphere s(3 , transformation), s2(2 , transformation);
 
 	
-		
 
 	
 
-	cout << glGetError() << endl;
-	float i = 0;
+
+	float i = 0 , j = 0 , k = 0 , theta = 0;
 	while (running)
 	{
-		win.clear();
-
 	
-		//Sleep(500);
-
-		GLuint vb;
-		glGenBuffers(1, &vb);
-		glBindBuffer(GL_ARRAY_BUFFER, vb);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(triangle), triangle, GL_STATIC_DRAW);
-
 
 		
+	
+		glm::vec3 cam(100 * cos(theta), 100 * sin(theta), 100*(sin(theta)+cos(theta)));
+		glUniform3fv(camera, 1, glm::value_ptr(cam));
+
+		s.position( 0, 0, 0);
+		s.draw();
+		s2.position(10 * cos(theta), 10 * sin(theta), 0);
+		theta += .001;
+		s2.draw();
 		
-		GLuint ebo;
-		glGenBuffers(1, &ebo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements, GL_STATIC_DRAW);
 		
-
-		glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
-		glEnableVertexAttribArray(posAttrib);
-
-		glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(colorAttrib);
-
-		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
-		//glDrawArrays(GL_TRIANGLES, 0, 4 );
-		glDrawElements(GL_TRIANGLES, sizeof(elements)/sizeof(GLuint), GL_UNSIGNED_INT, 0);
+		glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+		//glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
+		
+		
+		
 		sf::Event winEvent;
 		while (win.pollEvent(winEvent)) {
 			if (winEvent.type == sf::Event::Closed) {
 				running = false;
 				return 0;
 			}
-			if (winEvent.MouseMoved) {
-				i += .0001;
-				trans = glm::rotate(id, glm::radians(i), glm::vec3(0.0f, 0.0f, 1.0f));
-				if (i > 360) i = 0;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+				
+				trans = glm::rotate(trans, glm::radians(.5f), glm::vec3(0.0f, 0.0f, 1.0f));
+				
+				
 			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+				i += .1;
+				view = glm::lookAt(
+					glm::vec3(10.0f, 10.0f, 10.0f),
+					glm::vec3(i, 0.0f, k),
+					glm::vec3(0.0f, 0.0f, 1.0f)
+				);
+				
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				i -= .1;
+				view = glm::lookAt(
+					glm::vec3(10.0f, 10.0f, 10.0f),
+					glm::vec3(i, 0.0f, k),
+					glm::vec3(0.0f, 0.0f, 1.0f)
+				);
+				
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				k += .1;
+				view = glm::lookAt(
+					glm::vec3(10.0f, 10.0f, 10.0f),
+					glm::vec3(i, 0.0f, k),
+					glm::vec3(0.0f, 0.0f, 1.0f)
+				);
+				
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				k -= .1;
+				view = glm::lookAt(
+					glm::vec3(10.0f, 10.0f, 10.0f),
+					glm::vec3(i, 0.0f, k),
+					glm::vec3(0.0f, 0.0f, 1.0f)
+				);
+
+			}
+
 		}
 		win.display();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 }
