@@ -80,7 +80,7 @@ int main() {
 
 
 	sphere s(3 , transformation), s2(2 , transformation);
-
+	plane p(25, 25, glm::vec3(-12.5, -12.5, 0), transformation);
 	
 
 	
@@ -101,6 +101,7 @@ int main() {
 		s2.position(10 * cos(theta), 10 * sin(theta), 0);
 		theta += .001;
 		s2.draw();
+		p.draw();
 		
 		
 		glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
