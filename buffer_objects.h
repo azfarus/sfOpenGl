@@ -10,6 +10,10 @@ public:
 	void bind() {
 		glBindVertexArray(i);
 	}
+	void unbind() {
+		glBindVertexArray(0);
+	}
+
 };
 
 class VBO {
@@ -20,8 +24,11 @@ public:
 	}
 	void bind() {
 		glBindBuffer(GL_ARRAY_BUFFER , i);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_PROGRAM_POINT_SIZE);
+		
+	}
+	void unbind() {
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	}
 };
 
@@ -35,6 +42,10 @@ public:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, i);
 		
 	}
+	void unbind() {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	}
 };
 
 
@@ -46,7 +57,7 @@ class attribute {
 public:
 
 	
-	attribute(GLuint shaderprog  , std::string name ,int offset_val ) : totalvals(9) {
+	attribute(GLuint shaderprog  , std::string name ,int offset_val ) : totalvals(11) {
 		i = glGetAttribLocation(shaderprog, name.c_str());
 		if (i <0) {
 			std::cout << "Failed to Locate Attribute.\n";
@@ -54,8 +65,8 @@ public:
 		offset = offset_val;
 	}
 
-	void enable() {
-		glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, totalvals * sizeof(float), (void*)(offset * sizeof(float)));
+	void enable(int read = 3) {
+		glVertexAttribPointer(i, read, GL_FLOAT, GL_FALSE, totalvals * sizeof(float), (void*)(offset * sizeof(float)));
 		glEnableVertexAttribArray(i);
 		return;
 	}
@@ -69,9 +80,10 @@ class texture {
 public:
 	texture(std::string filepath) {
 		this->filepath = filepath;
+		textureID = loadTexture(filepath);
 	}
 	void bind() {
-		textureID = loadTexture(filepath);
+		glBindTexture(GL_TEXTURE_2D, textureID);
 	}
 	void unbind() {
 		glBindTexture(GL_TEXTURE_2D, 0);

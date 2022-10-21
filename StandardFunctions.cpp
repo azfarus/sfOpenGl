@@ -3,7 +3,7 @@
 
 
 
-void pushVectors(std::vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c) {
+void pushVectors(std::vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec2 d) {
 	v.push_back(a.x);
 	v.push_back(a.y);//position
 	v.push_back(a.z);
@@ -13,6 +13,8 @@ void pushVectors(std::vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c) {
 	v.push_back(c.x);
 	v.push_back(c.y);//normal
 	v.push_back(c.z);
+	v.push_back(d.x);
+	v.push_back(d.y);
 
 }
 
@@ -47,14 +49,14 @@ void pushvals(std::vector<float>& v, float init_x, float fin_x, float init_y, fl
 			cp3 = glm::cross(vex02, vex01);
 			cp0 = glm::normalize(cp0);
 			cp3 = glm::normalize(cp3);
+			glm::vec2 uv(0, 0);
+			pushVectors(v, vertex[0], color, cp0 ,uv );
+			pushVectors(v, vertex[1], color, cp0,uv);
+			pushVectors(v, vertex[2], color, cp0, uv);
 
-			pushVectors(v, vertex[0], color, cp0);
-			pushVectors(v, vertex[1], color, cp0);
-			pushVectors(v, vertex[2], color, cp0);
-
-			pushVectors(v, vertex[3], color, cp3);
-			pushVectors(v, vertex[1], color, cp3);
-			pushVectors(v, vertex[2], color, cp3);
+			pushVectors(v, vertex[3], color, cp3, uv);
+			pushVectors(v, vertex[1], color, cp3, uv);
+			pushVectors(v, vertex[2], color, cp3, uv);
 
 
 

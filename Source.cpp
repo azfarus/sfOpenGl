@@ -36,24 +36,31 @@ int main() {
 
 	 
 
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
+
+
+
+	VAO a; a.bind();
 	
 
+GLuint shaderProgram = shaderSet();
 
-
-
-	
-	VAO a;
-	a.bind();
-
-	GLuint shaderProgram = shaderSet();
-
+	EBO e;
 	
 	VBO b;
-	b.bind();
 
 	
-	EBO e;
-	e.bind();
+
+	attribute pos(shaderProgram, "position", 0),
+		col(shaderProgram, "colour", 3),
+		norm(shaderProgram, "normal", 6),
+		uv(shaderProgram, "uv", 9);
+	
+	
+	 
+	
 	
 
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
@@ -63,23 +70,23 @@ int main() {
 
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
-
-
-
-	attribute pos(shaderProgram, "position", 0),
-		col(shaderProgram, "colour", 3),
-		norm(shaderProgram, "normal", 6);
-
+sphere s(3, transformation), s2(5, transformation);
+	
 	pos.enable();
 	col.enable();
 	norm.enable();
+	uv.enable(2);
 
-
-
-	sphere s(3 , transformation), s2(2 , transformation);
-	plane p(25, 25, glm::vec3(-12.5, -12.5, 0), transformation);
 	
 
+
+
+	
+	//plane p(25, 25, glm::vec3(-12.5, -12.5, 0), transformation);
+	
+
+	texture t1("C:/Users/samaz/Pictures/jupiter.jpg"),
+			t2("C:/Users/samaz/Pictures/mercury.jpg");
 	
 
 
@@ -94,11 +101,13 @@ int main() {
 		glUniform3fv(camera, 1, glm::value_ptr(cam));
 
 		s.position( 0, 0, 0);
+		t1.bind();
 		s.draw();
 		s2.position(10 * cos(theta), 10 * sin(theta), 0);
 		theta += .001;
+		t2.bind();
 		s2.draw();
-		p.draw();
+		//p.draw();
 		
 		
 		glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));

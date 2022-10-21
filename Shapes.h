@@ -11,14 +11,17 @@ private:
 	float radius;
 	const float pi;
 	int stacks, sectors;
-	
+	VBO b;
+	EBO e;
 	glm::mat4  trans ;
 public:
-	sphere(float rad   , GLint transf) : pi(3.14159) , stacks(200) , sectors(200) {
+	sphere(float rad   , GLint transf) : pi(3.14159) , stacks(100) , sectors(100) {
 		radius = rad;
-		genVertices();
+		b.bind();
+		e.bind();
 		trans = glm::mat4(1.0f);
 		transformation = transf;
+		genVertices();
 	}
 	void genVertices() {
 		if (buffer.size() > 0) return;
@@ -26,24 +29,25 @@ public:
 		color.x = 1;
 		color.y = 1;
 		color.z = 1;
-		
+		long double uv_increment = 1.0 /(long double)sectors;
 		for (float i = 0; i < stacks ; i++) {
 			for (float j = 0; j < sectors; j++) {
 				glm::vec3 point;
-
+				glm::vec2 uv(j * uv_increment, i * uv_increment);
 				float phi = (pi / 2) - pi * (i / (float)stacks);
 				float theta = 2 * pi * (j / (float)sectors);
 				point.x = radius * cos(phi) * cos(theta);
 				point.y = radius * cos(phi) * sin(theta);
 				point.z = radius * sin(phi);
-				pushVectors(buffer, point, color, glm::normalize(point));
+				pushVectors(buffer, point, color, glm::normalize(point) , uv);
 				//std::cout << point.x <<" "<<point.y<<" "<<point.z<<"\n";
 				
 				
 			}
 		}
-
+		
 		buffer_pointer = &buffer[0];
+		
 		populateElement();
 	}
 
@@ -66,14 +70,19 @@ public:
 		}
 		
 		element_pointer = &element[0];
+		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, element.size() * sizeof(GLuint), element_pointer, GL_STATIC_DRAW);
+		
+	
 	}
 
 	void draw() {
+		b.bind(); e.bind();
 		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
-		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, element.size() * sizeof(GLuint),element_pointer, GL_STATIC_DRAW);
-		//glDrawArrays(GL_POINTS, 0, buffer.size());
+		
 		glDrawElements(GL_TRIANGLES,element.size() , GL_UNSIGNED_INT, 0);
+		
+		
 	}
 
 	void position(float x, float y, float z) {
@@ -123,10 +132,10 @@ public:
 				b(origin.x+w, origin.y, origin.z),
 				c(origin.x, origin.y+h, origin.z),
 				d(origin.x+w, origin.y+h, origin.z);
-		pushVectors(buffer, a, color, glm::vec3(0, 0, 1));
-		pushVectors(buffer, b, color, glm::vec3(0, 0, 1));
-		pushVectors(buffer, c, color, glm::vec3(0, 0, 1));
-		pushVectors(buffer, d, color, glm::vec3(0, 0, 1));
+		pushVectors(buffer, a, color, glm::vec3(0, 0, 1) , glm::vec2(0,0));
+		pushVectors(buffer, b, color, glm::vec3(0, 0, 1), glm::vec2(1, 0));
+		pushVectors(buffer, c, color, glm::vec3(0, 0, 1), glm::vec2(0, 1));
+		pushVectors(buffer, d, color, glm::vec3(0, 0, 1), glm::vec2(1, 1));
 
 		
 
