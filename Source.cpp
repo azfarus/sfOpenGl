@@ -73,11 +73,11 @@ GLuint shaderProgram = shaderSet();
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 	
-	sphere_shape s(3,glm::vec3(1,1,1), transformation , "D:/Project 2-1/jupiter.jpg");
+	sphere_shape s(3,glm::vec3(1,1,1), transformation , "jupiter.jpg");
 	//sphere_shape s2(1, glm::vec3(1, 1, 0) ,transformation);
-	light_source s3(3, transformation, light, "D:/Project 2-1/sun.jpg");
+	light_source s3(3, transformation, light, "sun.jpg");
 	//Cube
-	cube_shape c(glm::vec3(1, 1, 1),transformation, "D:/Project 2-1/sun.jpg");
+	cube_shape c(glm::vec3(1, 1, 1),transformation, "sun.jpg");
 	
 	pos.enable();
 	col.enable();

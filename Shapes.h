@@ -207,8 +207,6 @@ public:
 
 class cube_shape: public base_shape {
 private:
-	std::vector<float> buffer;
-	std::vector<GLuint> element;
 	GLint transformation;
 	float side;
 
