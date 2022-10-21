@@ -42,16 +42,18 @@ int main() {
 
 
 
-	VAO a; a.bind();
+	VAO a; 
+	
+	a.bind();
 	
 
 GLuint shaderProgram = shaderSet();
 
-	EBO e;
 	
 	VBO b;
-
-	
+	b.bind();
+	EBO e;
+	e.bind();
 
 	attribute pos(shaderProgram, "position", 0),
 		col(shaderProgram, "colour", 3),
@@ -66,11 +68,14 @@ GLuint shaderProgram = shaderSet();
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
 	GLint viewU = glGetUniformLocation(shaderProgram, "view");
-	GLint camera = glGetUniformLocation(shaderProgram, "camera");
+	GLint light = glGetUniformLocation(shaderProgram, "camera");
 
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
-sphere s(3, transformation), s2(5, transformation);
+	
+	sphere_shape s(3,glm::vec3(1,1,1), transformation , "C:/Users/samaz/Pictures/jupiter.jpg");
+	//sphere_shape s2(1, glm::vec3(1, 1, 0) ,transformation);
+	light_source s3(3, transformation, light, "C:/Users/samaz/Pictures/sun.jpg");
 	
 	pos.enable();
 	col.enable();
@@ -85,8 +90,7 @@ sphere s(3, transformation), s2(5, transformation);
 	//plane p(25, 25, glm::vec3(-12.5, -12.5, 0), transformation);
 	
 
-	texture t1("C:/Users/samaz/Pictures/jupiter.jpg"),
-			t2("C:/Users/samaz/Pictures/mercury.jpg");
+
 	
 
 
@@ -97,16 +101,16 @@ sphere s(3, transformation), s2(5, transformation);
 
 		
 	
-		glm::vec3 cam(100 * cos(theta), 100 * sin(theta), 100*(sin(theta)+cos(theta)));
-		glUniform3fv(camera, 1, glm::value_ptr(cam));
+		
 
 		s.position( 0, 0, 0);
-		t1.bind();
+		
 		s.draw();
-		s2.position(10 * cos(theta), 10 * sin(theta), 0);
+		s3.position(10 * cos(theta), 10 * sin(theta), 0);
 		theta += .001;
-		t2.bind();
-		s2.draw();
+		s3.scale(1.003, 1, 1);
+		s3.rotate(.1, glm::vec3(0, 0, 1));
+		s3.draw();
 		//p.draw();
 		
 		

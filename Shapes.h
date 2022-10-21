@@ -1,102 +1,7 @@
 #pragma once
 #include"StandardFunctions.h"
 
-class sphere {
-private: 
-	std::vector<float> buffer;
-	std::vector<GLuint> element;
-	GLuint* element_pointer;
-	GLint transformation;
-	float* buffer_pointer;
-	float radius;
-	const float pi;
-	int stacks, sectors;
-	VBO b;
-	EBO e;
-	glm::mat4  trans ;
-public:
-	sphere(float rad   , GLint transf) : pi(3.14159) , stacks(100) , sectors(100) {
-		radius = rad;
-		b.bind();
-		e.bind();
-		trans = glm::mat4(1.0f);
-		transformation = transf;
-		genVertices();
-	}
-	void genVertices() {
-		if (buffer.size() > 0) return;
-		glm::vec3 color ;
-		color.x = 1;
-		color.y = 1;
-		color.z = 1;
-		long double uv_increment = 1.0 /(long double)sectors;
-		for (float i = 0; i < stacks ; i++) {
-			for (float j = 0; j < sectors; j++) {
-				glm::vec3 point;
-				glm::vec2 uv(j * uv_increment, i * uv_increment);
-				float phi = (pi / 2) - pi * (i / (float)stacks);
-				float theta = 2 * pi * (j / (float)sectors);
-				point.x = radius * cos(phi) * cos(theta);
-				point.y = radius * cos(phi) * sin(theta);
-				point.z = radius * sin(phi);
-				pushVectors(buffer, point, color, glm::normalize(point) , uv);
-				//std::cout << point.x <<" "<<point.y<<" "<<point.z<<"\n";
-				
-				
-			}
-		}
-		
-		buffer_pointer = &buffer[0];
-		
-		populateElement();
-	}
 
-	void populateElement() {
-		
-		if(element.size() > 0) return;
-		for (int j = 0; j < stacks+1; j++) {
-			for (int i = 0; i < sectors+1; i++) {
-				//1st triangle
-				int n = j * stacks;
-				element.push_back(n+i);
-				element.push_back((i+1)%sectors+n);
-				element.push_back(n+i+sectors);
-				//2nd triangle
-				element.push_back(i + sectors + n);
-				element.push_back((( i + 1) % sectors)+sectors+n);
-				element.push_back((i + 1) % sectors + n);
-
-			}
-		}
-		
-		element_pointer = &element[0];
-		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, element.size() * sizeof(GLuint), element_pointer, GL_STATIC_DRAW);
-		
-	
-	}
-
-	void draw() {
-		b.bind(); e.bind();
-		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
-		
-		glDrawElements(GL_TRIANGLES,element.size() , GL_UNSIGNED_INT, 0);
-		
-		
-	}
-
-	void position(float x, float y, float z) {
-		trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
-		
-	}
-
-	void move(float x, float y, float z) {
-		trans = glm::translate(trans, glm::vec3(x, y, z));
-		
-	}
-
-	
-};
 
 
 class plane {
@@ -109,11 +14,11 @@ private:
 	float w, h , z;
 	glm::vec3 origin;
 	const float pi;
-	int stacks, sectors;
+	
 
 	glm::mat4  trans;
 public:
-	plane(float width, float height , glm::vec3 origin , GLint transf) : pi(3.14159), stacks(200), sectors(200) {
+	plane(float width, float height , glm::vec3 origin , GLint transf) : pi(3.14159) {
 		this->origin = origin;
 		w = width ;
 		h = height;
@@ -175,3 +80,177 @@ public:
 
 
 };
+
+class base_shape {
+
+protected:
+	glm::mat4x4 pos, rot, scal;
+	glm::vec3 center , color;
+	
+	std::vector<float> buffer;
+	std::vector<GLuint> element;
+	
+	GLint transformation;
+	texture tex;
+	GLuint* element_pointer;
+	float* buffer_pointer;
+	
+public:
+	base_shape(GLint transformation ,glm::vec3 color , std::string filepath = "C:/Users/samaz/Pictures/default.jpg") : tex(filepath) {
+		this->transformation = transformation;
+		pos = rot = scal = glm::mat4x4(1.0f);
+		element_pointer = NULL;
+		buffer_pointer = NULL;
+		center = glm::vec3(0, 0, 0);
+		this->color = color;
+	}
+
+	void rotate(float angle, glm::vec3 axis) {
+		rot = glm::rotate(rot, glm::radians(angle), axis);
+	}
+
+	void position(float x, float y, float z) {
+		
+		pos = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
+		center = pos * glm::vec4(0,0,0, 1);
+	}
+
+	void move(float x, float y, float z) {
+		pos = glm::translate(pos, glm::vec3(x, y, z));
+	}
+	void scale(float x , float y , float z) {
+		scal = glm::scale(glm::mat4x4(1.0f), glm::vec3(x, y, z));
+	}
+
+	void draw() {
+		
+		tex.bind();
+		glm::mat4 trans = pos *rot *scal ;
+		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
+		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, element.size() * sizeof(GLuint), element_pointer, GL_STATIC_DRAW);
+		glDrawElements(GL_TRIANGLES, element.size(), GL_UNSIGNED_INT, 0);
+		
+
+
+	}
+
+	
+};
+
+class sphere_shape :public base_shape {
+protected:
+	float radius;
+	int stacks = 50, sectors = 50;
+	const float pi = 3.141592;
+public:
+	sphere_shape(float radius,glm::vec3 clr, GLint transformation_sp ) :base_shape(transformation_sp, clr ) {
+		this->radius = radius;
+		color = clr;
+		genVertices();
+		
+	}
+	sphere_shape(float radius, glm::vec3 clr, GLint transformation_sp , std::string f_path) :base_shape(transformation_sp, clr , f_path) {
+		this->radius = radius;
+		color = clr;
+		genVertices();
+
+	}
+	void genVertices() {
+		if (buffer.size() > 0) return;
+		long double uv_increment = 1.0 / (long double)sectors;
+		for (float i = 0; i < stacks; i++) {
+			for (float j = 0; j < sectors; j++) {
+				glm::vec3 point;
+				glm::vec2 uv(j * uv_increment, i * uv_increment);
+				float phi = (pi / 2) - pi * (i / (float)stacks);
+				float theta = 2 * pi * (j / (float)sectors);
+				point.x = radius * cos(phi) * cos(theta);
+				point.y = radius * cos(phi) * sin(theta);
+				point.z = radius * sin(phi);
+				pushVectors(buffer, point, color, glm::normalize(point), uv);
+				//std::cout << point.x <<" "<<point.y<<" "<<point.z<<"\n";
+
+
+			}
+		}
+
+		buffer_pointer = &buffer[0];
+
+		populateElement();
+	}
+
+	void populateElement() {
+
+		if (element.size() > 0) return;
+		for (int j = 0; j < stacks + 1; j++) {
+			for (int i = 0; i < sectors + 1; i++) {
+				//1st triangle
+				int n = j * stacks;
+				element.push_back(n + i);
+				element.push_back((i + 1) % sectors + n);
+				element.push_back(n + i + sectors);
+				//2nd triangle
+				element.push_back(i + sectors + n);
+				element.push_back(((i + 1) % sectors) + sectors + n);
+				element.push_back((i + 1) % sectors + n);
+
+			}
+		}
+	
+		element_pointer = &element[0];
+		
+	}
+};
+
+
+class light_source: public sphere_shape {
+	GLint lightSrc;
+public:
+	light_source(float rad , GLint transformation , GLint lightsource):sphere_shape(rad , glm::vec3(1,1,1) ,transformation ) {
+		lightSrc = lightsource;
+	}
+	light_source(float rad, GLint transformation,  GLint lightsource ,std::string filepath) :sphere_shape(rad, glm::vec3(1, 1, 1), transformation, filepath) {
+		lightSrc = lightsource;
+	}
+	void genVertices() {
+		if (buffer.size() > 0) return;
+		long double uv_increment = 1.0 / (long double)sectors;
+		for (float i = 0; i < stacks; i++) {
+			for (float j = 0; j < sectors; j++) {
+				glm::vec3 point;
+				glm::vec2 uv(j * uv_increment, i * uv_increment);
+				float phi = (pi / 2) - pi * (i / (float)stacks);
+				float theta = 2 * pi * (j / (float)sectors);
+				point.x = radius * cos(phi) * cos(theta);
+				point.y = radius * cos(phi) * sin(theta);
+				point.z = radius * sin(phi);
+				pushVectors(buffer, point, color, glm::normalize(-point), uv);
+				//std::cout << point.x <<" "<<point.y<<" "<<point.z<<"\n";
+
+
+			}
+		}
+
+		buffer_pointer = &buffer[0];
+
+		populateElement();
+	}
+
+	void draw() {
+		center = pos * glm::vec4(center, 1);
+		
+
+		glUniform3fv(lightSrc, 1, glm::value_ptr(center));
+		tex.bind();
+		glm::mat4 trans = pos * rot * scal;
+		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
+		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, element.size() * sizeof(GLuint), element_pointer, GL_STATIC_DRAW);
+		glDrawElements(GL_TRIANGLES, element.size(), GL_UNSIGNED_INT, 0);
+
+
+
+	}
+};
+

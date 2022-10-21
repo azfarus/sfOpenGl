@@ -18,7 +18,7 @@ void main()
 
 UV = uv;
 vec3 pos = vec3(trans*vec4(position.x , position.y,position.z,1));
-vec3 norm = normalize(normal);
+vec3 norm = normalize(vec3(trans* vec4(normal,1)));
 vec3 crntpos = normalize(camera - pos);
 
 float light = max(dot(crntpos , norm),0) ;
