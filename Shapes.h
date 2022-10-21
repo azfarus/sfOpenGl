@@ -113,6 +113,7 @@ public:
 		
 		pos = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
 		center = pos * glm::vec4(0,0,0, 1);
+		
 	}
 
 	void move(float x, float y, float z) {
@@ -234,14 +235,14 @@ public:
 			h(-1.0, 1.0, -1.0f);
 
 		//Pushing
-		pushVectors(buffer, a, color, glm::vec3(1, 0, 0), glm::vec2(0, 0));
-		pushVectors(buffer, b, color, glm::vec3(0, 1, 0), glm::vec2(1, 0));
-		pushVectors(buffer, c, color, glm::vec3(0, 0, 1), glm::vec2(1, 1));
-		pushVectors(buffer, d, color, glm::vec3(1, 1, 1), glm::vec2(0, 1));
-		pushVectors(buffer, e, color, glm::vec3(1, 0, 0), glm::vec2(0, 0));
-		pushVectors(buffer, f, color, glm::vec3(0, 1, 0), glm::vec2(1, 0));
-		pushVectors(buffer, g, color, glm::vec3(0, 0, 1), glm::vec2(1, 1));
-		pushVectors(buffer, h, color, glm::vec3(1, 1, 1), glm::vec2(0, 1));
+		pushVectors(buffer, a, color, a, glm::vec2(0, 0));
+		pushVectors(buffer, b, color, b, glm::vec2(1, 0));
+		pushVectors(buffer, c, color, c, glm::vec2(1, 1));
+		pushVectors(buffer, d, color, d, glm::vec2(0, 1));
+		pushVectors(buffer, e, color, e, glm::vec2(0, 0));
+		pushVectors(buffer, f, color, f, glm::vec2(1, 0));
+		pushVectors(buffer, g, color, g, glm::vec2(1, 1));
+		pushVectors(buffer, h, color, h, glm::vec2(0, 1));
 
 		buffer_pointer = &buffer[0];
 		populateElement();

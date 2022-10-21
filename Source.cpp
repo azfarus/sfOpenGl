@@ -60,7 +60,10 @@ GLuint shaderProgram = shaderSet();
 		norm(shaderProgram, "normal", 6),
 		uv(shaderProgram, "uv", 9);
 	
-	
+	pos.enable();
+	col.enable();
+	norm.enable();
+	uv.enable(2);
 	 
 	
 	
@@ -75,14 +78,11 @@ GLuint shaderProgram = shaderSet();
 	
 	sphere_shape s(3,glm::vec3(1,1,1), transformation , "jupiter.jpg");
 	//sphere_shape s2(1, glm::vec3(1, 1, 0) ,transformation);
-	light_source s3(3, transformation, light, "sun.jpg");
+	light_source s3(3, transformation, light, "sun.jpg") , s4(3, transformation, light, "jupiter.jpg");
 	//Cube
 	cube_shape c(glm::vec3(1, 1, 1),transformation, "sun.jpg");
+	c.scale(2, 2, 2);
 	
-	pos.enable();
-	col.enable();
-	norm.enable();
-	uv.enable(2);
 
 	
 
@@ -113,6 +113,8 @@ GLuint shaderProgram = shaderSet();
 		s3.scale(1.003, 1, 1);
 		s3.rotate(.1, glm::vec3(0, 0, 1));
 		s3.draw();
+		s4.position(10 * cos(theta + 1), 10 * sin(theta + 1), 0);
+		s4.draw();
 		//p.draw();
 		
 		
