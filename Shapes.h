@@ -166,3 +166,120 @@ public:
 
 
 };
+//Cube
+
+class Cube {
+private:
+	std::vector<float> buffer;
+	std::vector<GLuint> element;
+	GLuint* element_pointer;
+	GLint transformation;
+	float* buffer_pointer;
+	float side;
+
+	glm::mat4  trans;
+public:
+	//Cube constructor
+	Cube(float s, GLint transf)
+	{
+		side = s;
+		trans = glm::mat4(1.0f);
+		transformation = transf;
+		genVertices();
+	}
+
+	void genVertices()
+	{
+		if (buffer.size() > 0) return;
+		glm::vec3 color;
+		color.x = .5;
+		color.y = .4;
+		color.z = 1;
+
+		//push vectors part
+		glm::vec3
+			//Front 4
+			a(-1.0f, -1.0f, 1.0f),
+			b(1.0f, -1.0f, 1.0f),
+			c(1.0, 1.0, 1.0),
+			d(-1.0, 1.0, 1.0),
+			//Back 4
+			e(-1.0f, -1.0f, -1.0f),
+			f(1.0f, -1.0f, -1.0f),
+			g(1.0, 1.0, -1.0),
+			h(-1.0, 1.0, -1.0);
+
+		//Pushing
+		pushVectors(buffer, a, color, glm::vec3(1, 0, 0));
+		pushVectors(buffer, b, color, glm::vec3(0, 1, 0));
+		pushVectors(buffer, c, color, glm::vec3(0, 0, 1));
+		pushVectors(buffer, d, color, glm::vec3(1, 1, 1));
+		pushVectors(buffer, e, color, glm::vec3(1, 0, 0));
+		pushVectors(buffer, f, color, glm::vec3(0, 1, 0));
+		pushVectors(buffer, g, color, glm::vec3(0, 0, 1));
+		pushVectors(buffer, h, color, glm::vec3(1, 1, 1));
+
+		buffer_pointer = &buffer[0];
+		populateElement();
+	}
+
+	void populateElement()
+	{
+		//populating step
+		element.push_back(0);
+		element.push_back(1);
+		element.push_back(2);
+		element.push_back(2);
+		element.push_back(3);
+		element.push_back(0);
+		element.push_back(1);
+		element.push_back(5);
+		element.push_back(6);
+		element.push_back(6);
+		element.push_back(2);
+		element.push_back(1);
+		element.push_back(7);
+		element.push_back(6);
+		element.push_back(5);
+		element.push_back(5);
+		element.push_back(4);
+		element.push_back(7);
+		element.push_back(4);
+		element.push_back(0);
+		element.push_back(3);
+		element.push_back(3);
+		element.push_back(7);
+		element.push_back(4);
+		element.push_back(4);
+		element.push_back(5);
+		element.push_back(1);
+		element.push_back(1);
+		element.push_back(0);
+		element.push_back(4);
+		element.push_back(3);
+		element.push_back(2);
+		element.push_back(6);
+		element.push_back(6);
+		element.push_back(7);
+		element.push_back(3);
+
+		element_pointer = &element[0];
+	}
+	void draw() {
+		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
+		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, element.size() * sizeof(GLuint), element_pointer, GL_STATIC_DRAW);
+		//glDrawArrays(GL_POINTS, 0, buffer.size());
+		glDrawElements(GL_TRIANGLES, element.size(), GL_UNSIGNED_INT, 0);
+	}
+	//Default
+	void position(float x, float y, float z) {
+		trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
+
+	}
+
+	void move(float x, float y, float z) {
+		trans = glm::translate(trans, glm::vec3(x, y, z));
+
+	}
+};

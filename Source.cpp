@@ -97,11 +97,14 @@ int main() {
 		glUniform3fv(camera, 1, glm::value_ptr(cam));
 
 		s.position( 0, 0, 0);
-		s.draw();
+		/*s.draw();*/
+		//Cube
+		Cube c(5, transformation);
+		c.draw();
 		s2.position(10 * cos(theta), 10 * sin(theta), 0);
 		theta += .001;
 		s2.draw();
-		p.draw();
+		/*p.draw();*/
 		
 		
 		glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
