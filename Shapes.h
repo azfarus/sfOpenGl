@@ -203,6 +203,95 @@ public:
 	}
 };
 
+//Cube
+
+class cube_shape: public base_shape {
+private:
+	std::vector<float> buffer;
+	std::vector<GLuint> element;
+	GLint transformation;
+	float side;
+
+public:
+	//Cube constructor
+	cube_shape( glm::vec3 clr, GLint transformation_sp, std::string filePath): base_shape(transformation_sp, clr, filePath)
+	{
+		genVertices();
+	}
+
+	void genVertices()
+	{
+
+		//push vectors part
+		glm::vec3
+			//Front 4
+			a(-1.0f, -1.0f, 1.0f),
+			b(1.0f, -1.0f, 1.0f),
+			c(1.0, 1.0, 1.0f),
+			d(-1.0, 1.0, 1.0f),
+			//Back 4
+			e(-1.0f, -1.0f, -1.0f),
+			f(1.0f, -1.0f, -1.0f),
+			g(1.0, 1.0, -1.0f),
+			h(-1.0, 1.0, -1.0f);
+
+		//Pushing
+		pushVectors(buffer, a, color, glm::vec3(1, 0, 0), glm::vec2(0, 0));
+		pushVectors(buffer, b, color, glm::vec3(0, 1, 0), glm::vec2(1, 0));
+		pushVectors(buffer, c, color, glm::vec3(0, 0, 1), glm::vec2(1, 1));
+		pushVectors(buffer, d, color, glm::vec3(1, 1, 1), glm::vec2(0, 1));
+		pushVectors(buffer, e, color, glm::vec3(1, 0, 0), glm::vec2(0, 0));
+		pushVectors(buffer, f, color, glm::vec3(0, 1, 0), glm::vec2(1, 0));
+		pushVectors(buffer, g, color, glm::vec3(0, 0, 1), glm::vec2(1, 1));
+		pushVectors(buffer, h, color, glm::vec3(1, 1, 1), glm::vec2(0, 1));
+
+		buffer_pointer = &buffer[0];
+		populateElement();
+	}
+
+	void populateElement()
+	{
+		//populating step
+		element.push_back(0);
+		element.push_back(1);
+		element.push_back(2);
+		element.push_back(2);
+		element.push_back(3);
+		element.push_back(0);
+		element.push_back(1);
+		element.push_back(5);
+		element.push_back(6);
+		element.push_back(6);
+		element.push_back(2);
+		element.push_back(1);
+		element.push_back(7);
+		element.push_back(6);
+		element.push_back(5);
+		element.push_back(5);
+		element.push_back(4);
+		element.push_back(7);
+		element.push_back(4);
+		element.push_back(0);
+		element.push_back(3);
+		element.push_back(3);
+		element.push_back(7);
+		element.push_back(4);
+		element.push_back(4);
+		element.push_back(5);
+		element.push_back(1);
+		element.push_back(1);
+		element.push_back(0);
+		element.push_back(4);
+		element.push_back(3);
+		element.push_back(2);
+		element.push_back(6);
+		element.push_back(6);
+		element.push_back(7);
+		element.push_back(3);
+
+		element_pointer = &element[0];
+	}
+};
 
 class light_source: public sphere_shape {
 	GLint lightSrc;
