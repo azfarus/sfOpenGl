@@ -95,3 +95,31 @@ sf::ContextSettings windowInit() {
 
 	return set;
 }
+
+GLuint loadTexture(std::string filepath , int flip ) {
+	stbi_set_flip_vertically_on_load(flip);
+	int w, h, channels;
+	unsigned char * data = stbi_load(filepath.c_str(), &w, &h, &channels, 0);
+	GLuint texture = 0;
+	if (data) {
+		std::cout << "Loaded " << filepath << std::endl;
+		
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	}
+	else{
+			std::cout << "Failed to load " << filepath << std::endl;
+		
+	}
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	stbi_image_free(data);
+	return texture;
+
+	
+	
+}

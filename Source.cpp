@@ -40,11 +40,7 @@ int main() {
 
 
 
-	float* points;
-	vector<float> graph;
-	pushvals(graph , -5 , 5, 0 , 10 ,150);
 
-	points = &graph[0];
 	
 	VAO a;
 	a.bind();
@@ -77,6 +73,7 @@ int main() {
 	pos.enable();
 	col.enable();
 	norm.enable();
+
 
 
 	sphere s(3 , transformation), s2(2 , transformation);

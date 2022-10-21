@@ -63,3 +63,18 @@ public:
 
 };
 
+class texture {
+	GLuint textureID;
+	std::string filepath;
+public:
+	texture(std::string filepath) {
+		this->filepath = filepath;
+	}
+	void bind() {
+		textureID = loadTexture(filepath);
+	}
+	void unbind() {
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+};
+
