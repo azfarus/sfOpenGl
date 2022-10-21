@@ -3,7 +3,7 @@
 
 
 
-void pushVectors(std::vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c) {
+void pushVectors(std::vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec2 d) {
 	v.push_back(a.x);
 	v.push_back(a.y);//position
 	v.push_back(a.z);
@@ -13,6 +13,8 @@ void pushVectors(std::vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c) {
 	v.push_back(c.x);
 	v.push_back(c.y);//normal
 	v.push_back(c.z);
+	v.push_back(d.x);
+	v.push_back(d.y);
 
 }
 
@@ -47,14 +49,14 @@ void pushvals(std::vector<float>& v, float init_x, float fin_x, float init_y, fl
 			cp3 = glm::cross(vex02, vex01);
 			cp0 = glm::normalize(cp0);
 			cp3 = glm::normalize(cp3);
+			glm::vec2 uv(0, 0);
+			pushVectors(v, vertex[0], color, cp0 ,uv );
+			pushVectors(v, vertex[1], color, cp0,uv);
+			pushVectors(v, vertex[2], color, cp0, uv);
 
-			pushVectors(v, vertex[0], color, cp0);
-			pushVectors(v, vertex[1], color, cp0);
-			pushVectors(v, vertex[2], color, cp0);
-
-			pushVectors(v, vertex[3], color, cp3);
-			pushVectors(v, vertex[1], color, cp3);
-			pushVectors(v, vertex[2], color, cp3);
+			pushVectors(v, vertex[3], color, cp3, uv);
+			pushVectors(v, vertex[1], color, cp3, uv);
+			pushVectors(v, vertex[2], color, cp3, uv);
 
 
 
@@ -94,4 +96,32 @@ sf::ContextSettings windowInit() {
 	set.stencilBits = 16;
 
 	return set;
+}
+
+GLuint loadTexture(std::string filepath , int flip ) {
+	stbi_set_flip_vertically_on_load(flip);
+	int w, h, channels;
+	unsigned char * data = stbi_load(filepath.c_str(), &w, &h, &channels, 0);
+	GLuint texture = 0;
+	if (data) {
+		std::cout << "Loaded " << filepath << std::endl;
+		
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	}
+	else{
+			std::cout << "Failed to load " << filepath << std::endl;
+		
+	}
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	stbi_image_free(data);
+	return texture;
+
+	
+	
 }

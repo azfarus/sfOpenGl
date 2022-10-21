@@ -36,52 +36,60 @@ int main() {
 
 	 
 
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
+
+
+
+	VAO a; 
 	
-
-
-
-	float* points;
-	vector<float> graph;
-	pushvals(graph , -5 , 5, 0 , 10 ,150);
-
-	points = &graph[0];
-	
-	VAO a;
 	a.bind();
+	
 
-	GLuint shaderProgram = shaderSet();
+GLuint shaderProgram = shaderSet();
 
 	
 	VBO b;
 	b.bind();
-
-	
 	EBO e;
 	e.bind();
+
+	attribute pos(shaderProgram, "position", 0),
+		col(shaderProgram, "colour", 3),
+		norm(shaderProgram, "normal", 6),
+		uv(shaderProgram, "uv", 9);
+	
+	
+	 
+	
 	
 
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
 	GLint viewU = glGetUniformLocation(shaderProgram, "view");
-	GLint camera = glGetUniformLocation(shaderProgram, "camera");
+	GLint light = glGetUniformLocation(shaderProgram, "camera");
 
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
-
-
-
-	attribute pos(shaderProgram, "position", 0),
-		col(shaderProgram, "colour", 3),
-		norm(shaderProgram, "normal", 6);
-
+	
+	sphere_shape s(3,glm::vec3(1,1,1), transformation , "G:/MyProjects/sfOpenGl/jupiter.jpg");
+	//sphere_shape s2(1, glm::vec3(1, 1, 0) ,transformation);
+	light_source s3(3, transformation, light, "G:/MyProjects/sfOpenGl/sun.jpg");
+	
 	pos.enable();
 	col.enable();
 	norm.enable();
-
-
-	sphere s(3 , transformation), s2(2 , transformation);
+	uv.enable(2);
 
 	
+
+
+
+	
+	//plane p(25, 25, glm::vec3(-12.5, -12.5, 0), transformation);
+	
+
 
 	
 
@@ -93,14 +101,17 @@ int main() {
 
 		
 	
-		glm::vec3 cam(100 * cos(theta), 100 * sin(theta), 100*(sin(theta)+cos(theta)));
-		glUniform3fv(camera, 1, glm::value_ptr(cam));
+		
 
 		s.position( 0, 0, 0);
+		
 		s.draw();
-		s2.position(10 * cos(theta), 10 * sin(theta), 0);
+		s3.position(10 * cos(theta), 10 * sin(theta), 0);
 		theta += .001;
-		s2.draw();
+		s3.scale(1.003, 1, 1);
+		s3.rotate(.1, glm::vec3(0, 0, 1));
+		s3.draw();
+		//p.draw();
 		
 		
 		glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
