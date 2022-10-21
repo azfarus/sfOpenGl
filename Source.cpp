@@ -73,9 +73,9 @@ GLuint shaderProgram = shaderSet();
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 	
-	sphere_shape s(3,glm::vec3(1,1,1), transformation , "C:/Users/samaz/Pictures/jupiter.jpg");
+	sphere_shape s(3,glm::vec3(1,1,1), transformation , "G:/MyProjects/sfOpenGl/jupiter.jpg");
 	//sphere_shape s2(1, glm::vec3(1, 1, 0) ,transformation);
-	light_source s3(3, transformation, light, "C:/Users/samaz/Pictures/sun.jpg");
+	light_source s3(3, transformation, light, "G:/MyProjects/sfOpenGl/sun.jpg");
 	
 	pos.enable();
 	col.enable();
