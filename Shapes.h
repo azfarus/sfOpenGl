@@ -90,14 +90,15 @@ protected:
 	std::vector<float> buffer;
 	std::vector<GLuint> element;
 	
-	GLint transformation;
+	GLint transformation , rot_scale;
 	texture tex;
 	GLuint* element_pointer;
 	float* buffer_pointer;
 	
 public:
-	base_shape(GLint transformation ,glm::vec3 color , std::string filepath = "C:/Users/samaz/Pictures/default.jpg") : tex(filepath) {
-		this->transformation = transformation;
+	base_shape(GLint shader ,glm::vec3 color , std::string filepath = "C:/Users/samaz/Pictures/default.jpg") : tex(filepath) {
+		this->transformation= glGetUniformLocation(shader, "trans");;
+		this->rot_scale = glGetUniformLocation(shader, "rot_scale");
 		pos = rot = scal = glm::mat4x4(1.0f);
 		element_pointer = NULL;
 		buffer_pointer = NULL;
@@ -126,6 +127,7 @@ public:
 		
 		tex.bind();
 		glm::mat4 trans = pos *rot *scal ;
+		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot * scal));
 		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
 		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, element.size() * sizeof(GLuint), element_pointer, GL_STATIC_DRAW);
@@ -144,18 +146,17 @@ protected:
 	int stacks = 50, sectors = 50;
 	const float pi = 3.141592;
 public:
-	sphere_shape(float radius,glm::vec3 clr, GLint transformation_sp ) :base_shape(transformation_sp, clr ) {
+	
+	sphere_shape(float radius, glm::vec3 clr , GLint shader, std::string f_path = "earth.jpg") :base_shape( shader ,clr, f_path) {
 		this->radius = radius;
-		color = clr;
-		genVertices();
-		
-	}
-	sphere_shape(float radius, glm::vec3 clr, GLint transformation_sp , std::string f_path) :base_shape(transformation_sp, clr , f_path) {
-		this->radius = radius;
-		color = clr;
 		genVertices();
 
 	}
+	sphere_shape(float radius, GLint shader , std::string f_path) :base_shape(shader ,glm::vec3(1,1,1), f_path) {
+		this->radius = radius;
+	}
+
+	
 	void genVertices() {
 		if (buffer.size() > 0) return;
 		long double uv_increment = 1.0 / (long double)sectors;
@@ -169,7 +170,7 @@ public:
 				point.y = radius * cos(phi) * sin(theta);
 				point.z = radius * sin(phi);
 				pushVectors(buffer, point, color, glm::normalize(point), uv);
-				//std::cout << point.x <<" "<<point.y<<" "<<point.z<<"\n";
+				
 
 
 			}
@@ -207,11 +208,11 @@ public:
 class light_source: public sphere_shape {
 	GLint lightSrc;
 public:
-	light_source(float rad , GLint transformation , GLint lightsource):sphere_shape(rad , glm::vec3(1,1,1) ,transformation ) {
-		lightSrc = lightsource;
-	}
-	light_source(float rad, GLint transformation,  GLint lightsource ,std::string filepath) :sphere_shape(rad, glm::vec3(1, 1, 1), transformation, filepath) {
-		lightSrc = lightsource;
+	
+	light_source(float rad , GLint shader,std::string filepath = "sun.jpg") :sphere_shape(rad, shader ,filepath) {
+		radius = rad;
+		this->lightSrc = glGetUniformLocation(shader, "camera");
+		genVertices();
 	}
 	void genVertices() {
 		if (buffer.size() > 0) return;
@@ -219,15 +220,14 @@ public:
 		for (float i = 0; i < stacks; i++) {
 			for (float j = 0; j < sectors; j++) {
 				glm::vec3 point;
-				glm::vec2 uv(j * uv_increment, i * uv_increment);
+				glm::vec2 uv((j+1) * uv_increment, (i+1) * uv_increment);
 				float phi = (pi / 2) - pi * (i / (float)stacks);
 				float theta = 2 * pi * (j / (float)sectors);
 				point.x = radius * cos(phi) * cos(theta);
 				point.y = radius * cos(phi) * sin(theta);
 				point.z = radius * sin(phi);
 				pushVectors(buffer, point, color, glm::normalize(-point), uv);
-				//std::cout << point.x <<" "<<point.y<<" "<<point.z<<"\n";
-
+				
 
 			}
 		}
@@ -238,12 +238,16 @@ public:
 	}
 
 	void draw() {
-		center = pos * glm::vec4(center, 1);
+		//center = pos * glm::vec4(center, 1);
 		
-
+		
 		glUniform3fv(lightSrc, 1, glm::value_ptr(center));
 		tex.bind();
+		
+		
+		
 		glm::mat4 trans = pos * rot * scal;
+		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot * scal));
 		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
 		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, element.size() * sizeof(GLuint), element_pointer, GL_STATIC_DRAW);
@@ -251,6 +255,9 @@ public:
 
 
 
+	}
+	glm::vec3 get_center() {
+		return center;
 	}
 };
 

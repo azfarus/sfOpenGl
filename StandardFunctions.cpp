@@ -1,6 +1,7 @@
 #include"StandardFunctions.h"
 #include"vertexShader.h"
-
+#include "buffer_objects.h"
+#include "Shapes.h"
 
 
 void pushVectors(std::vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec2 d) {
@@ -124,4 +125,163 @@ GLuint loadTexture(std::string filepath , int flip ) {
 
 	
 	
+}
+
+void keplar(sf::RenderWindow& win) {
+
+	bool running = win.isOpen();
+
+	glm::mat4  trans = glm::mat4(1.0f);
+	glm::mat4 proj = glm::perspective<float>(glm::radians(75.0), 1280.0 / 960.0f, .25, 400);
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(10.0f, 10.0f, 10.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 1.0f)
+	);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
+
+
+
+	VAO a;
+	a.bind();
+	VBO b;
+	b.bind();
+	EBO e;
+	e.bind();
+	GLuint shaderProgram = shaderSet();
+
+	attribute pos(shaderProgram, "position", 0),
+		col(shaderProgram, "colour", 3),
+		norm(shaderProgram, "normal", 6),
+		uv(shaderProgram, "uv", 9);
+
+	pos.enable();
+	col.enable();
+	norm.enable();
+	uv.enable(2);
+
+
+	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
+	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
+	GLint viewU = glGetUniformLocation(shaderProgram, "view");
+	GLint light = glGetUniformLocation(shaderProgram, "camera");
+
+
+
+
+
+
+
+
+
+	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+
+	
+	
+	sphere_shape earth(3, glm::vec3(1, 1, 1),  shaderProgram,  "earth.jpg"),
+				moon(1.5 , glm::vec3(1,1,1) , shaderProgram , "moon.jpg");
+	light_source sun(2.5, shaderProgram , "sun.jpg");
+
+
+
+
+
+
+
+
+
+
+
+
+
+	float i = 0, j = 0, k = 0, theta = 0, fov = 75 , look_at = 10;
+	while (running)
+	{
+		theta += .0005;
+		float earth_x, earth_y, earth_z,
+			moon_x, moon_y, moon_z;
+
+		earth_x = 25 * sin(theta);
+		earth_y = 25 * cos(theta);
+		earth_z = 0;
+
+		
+		moon_x = earth_x + 5 * sin(theta*13.06);
+		moon_y = earth_y + 5 * cos(theta * 13.06);
+		moon_z = earth_z + 0;
+
+		earth.position(earth_x, earth_y, earth_z);
+		moon.position(moon_x, moon_y, moon_z);
+		sun.position(0, 0, 0);
+		earth.rotate(glm::degrees(.00005 * 365) , glm::vec3(0,0,1));
+		moon.rotate(glm::degrees(-.00005 * 13.36996), glm::vec3(0, 0, 1));
+
+		sun.draw();
+		earth.draw();
+		moon.draw();
+
+
+		
+
+		sf::Event winEvent;
+		while (win.pollEvent(winEvent)) {
+			if (winEvent.type == sf::Event::Closed) {
+				running = false;
+				return ;
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+				i += .5;
+				
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				i -= .5;
+				
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				k += .5;
+				
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				k -= .5;
+				
+
+			}
+			else if (winEvent.type == sf::Event::MouseWheelMoved) {
+				if (winEvent.mouseWheel.delta > 0) {
+
+					look_at--;
+				}
+				else if (winEvent.mouseWheel.delta < 0) {
+					look_at++;
+				}
+			}
+
+			view = glm::lookAt(
+				glm::vec3(look_at, look_at, look_at),
+				glm::vec3(i, 0.0f, k),
+				glm::vec3(0.0f, 0.0f, 1.0f)
+			);
+			glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+		}
+
+
+
+
+
+
+		win.display();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 }
