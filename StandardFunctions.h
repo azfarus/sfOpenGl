@@ -19,3 +19,4 @@ void pushvals(std::vector<float>& v, float init_x, float fin_x, float init_y, fl
 GLuint shaderSet();
 sf::ContextSettings windowInit();
 GLuint loadTexture(std::string filepath , int flip = 0);
+void keplar(sf::RenderWindow& win);
