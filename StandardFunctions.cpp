@@ -185,8 +185,8 @@ void keplar(sf::RenderWindow& win) {
 	sphere_shape earth(3, glm::vec3(1, 1, 1),  shaderProgram,  "earth.jpg"),
 				moon(1.5 , glm::vec3(1,1,1) , shaderProgram , "moon.jpg");
 	light_source sun(2.5, shaderProgram , "sun.jpg");
-
-
+	random_pts r(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg");
+	//line l(glm::vec3(0, 0, 0), glm::vec3(50, -50, 50), glm::vec3(1, 1, 1), shaderProgram);
 
 
 
@@ -199,30 +199,33 @@ void keplar(sf::RenderWindow& win) {
 
 
 	float i = 0, j = 0, k = 0, theta = 0, fov = 75 , look_at = 10;
+	bool view_flag= 0;
 	while (running)
 	{
-		theta += .0005;
+		theta += .000005;
 		float earth_x, earth_y, earth_z,
-			moon_x, moon_y, moon_z;
+		moon_x, moon_y, moon_z;
 
 		earth_x = 25 * sin(theta);
 		earth_y = 25 * cos(theta);
 		earth_z = 0;
 
 		
-		moon_x = earth_x + 5 * sin(theta*13.06);
-		moon_y = earth_y + 5 * cos(theta * 13.06);
-		moon_z = earth_z + 0;
+		moon_x = earth_x + 12 * sin(theta*13.36);
+		moon_y = earth_y + 12 * cos(theta * 13.36);
+		moon_z = earth_z + 4.5*sin(theta * 13.36);
 
 		earth.position(earth_x, earth_y, earth_z);
 		moon.position(moon_x, moon_y, moon_z);
 		sun.position(0, 0, 0);
-		earth.rotate(glm::degrees(.00005 * 365) , glm::vec3(0,0,1));
-		moon.rotate(glm::degrees(-.00005 * 13.36996), glm::vec3(0, 0, 1));
+		earth.rotate(glm::degrees(.000005 * 365) , glm::vec3(0,0,1));
+		moon.rotate(glm::degrees(-.000005 * 13.36996), glm::vec3(0, 0, 1));
 
 		sun.draw();
 		earth.draw();
 		moon.draw();
+		r.draw();
+		//l.draw();
 
 
 		
@@ -266,17 +269,237 @@ void keplar(sf::RenderWindow& win) {
 					look_at++;
 				}
 			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+				view_flag = !view_flag;
+				while (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
 
-			view = glm::lookAt(
-				glm::vec3(look_at, look_at, look_at),
-				glm::vec3(i, 0.0f, k),
-				glm::vec3(0.0f, 0.0f, 1.0f)
-			);
-			glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+				}
+			}
+
+			
 			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 		}
 
+		if (view_flag) {
+			view = glm::lookAt(
+				earth.get_cam(),
+				earth.get_lookAt(),
+				glm::vec3(0.0f, 0.0f, 1.0f)
+			);
+			glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+		}
+		else {
+			view = glm::lookAt(
+				glm::vec3(look_at,look_at , look_at),
+				glm::vec3(i , 0 , k),
+				glm::vec3(0.0f, 0.0f, 1.0f)
+			);
+			glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+		}
+		
 
+
+
+		win.display();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+}
+
+
+void LA(sf::RenderWindow& win) {
+
+	bool running = win.isOpen();
+
+	glm::mat4  trans = glm::mat4(1.0f);
+	glm::mat4 proj = glm::perspective<float>(glm::radians(75.0), 1280.0 / 960.0f, .25, 400);
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(10.0f, 10.0f, 10.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 1.0f)
+	);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
+
+
+
+	VAO a;
+	a.bind();
+	VBO b;
+	b.bind();
+	EBO e;
+	e.bind();
+	GLuint shaderProgram = shaderSet();
+
+	attribute pos(shaderProgram, "position", 0),
+		col(shaderProgram, "colour", 3),
+		norm(shaderProgram, "normal", 6),
+		uv(shaderProgram, "uv", 9);
+
+	pos.enable();
+	col.enable();
+	norm.enable();
+	uv.enable(2);
+
+
+	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
+	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
+	GLint viewU = glGetUniformLocation(shaderProgram, "view");
+	GLint light = glGetUniformLocation(shaderProgram, "camera");
+
+
+
+
+
+
+
+
+
+	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+
+
+
+	
+	random_pts r(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg");
+	line l(glm::vec3(0, 0, 0), glm::vec3(50, 0, 0), glm::vec3(1, 0, 0), shaderProgram);
+	line ly(glm::vec3(0, 0, 0), glm::vec3(0, 50, 0), glm::vec3(0, 1, 0), shaderProgram);
+	line lz(glm::vec3(0, 0, 0), glm::vec3(0, 0, 50), glm::vec3(0, 0, 1), shaderProgram);
+
+	glm::mat4x4 rot_matrix(1.0f);
+
+
+	glm::mat3 x(glm::vec3(1, 0, 1)
+		, glm::vec3(1, 0, 1)
+		, glm::vec3(1, 1, 0 ));
+
+
+	r.ste_customTrans(x);
+
+
+
+
+
+	float i = 0, j = 0, k = 0, theta = 0, fov = 75, look_at = 40;
+	bool view_flag = false;
+	while (running)
+	{
+		
+		r.draw();
+		l.draw();
+		ly.draw();
+		lz.draw();
+
+
+
+
+		sf::Event winEvent;
+		while (win.pollEvent(winEvent)) {
+			if (winEvent.type == sf::Event::Closed) {
+				running = false;
+				return;
+			}
+			
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+				i += .5f;
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				i -= .5f;
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				k += .5f;
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				k -= .5f;
+
+
+			}
+			else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+				{
+					rot_matrix = glm::rotate( rot_matrix, glm::radians(.6f), glm::vec3(1, 0, 0));
+
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 1, 0));
+
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 0, 1));
+
+
+				}
+
+
+				
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(1, 0, 0));
+
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 1, 0));
+
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 0, 1));
+
+
+				}
+
+
+
+			}
+			else if (winEvent.type == sf::Event::MouseWheelMoved) {
+				if (winEvent.mouseWheel.delta > 0) {
+
+					look_at--;
+				}
+				else if (winEvent.mouseWheel.delta < 0) {
+					look_at++;
+				}
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+				view_flag = !view_flag;
+				while (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+
+				}
+			}
+
+
+			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+		}
+
+		
+		view = glm::lookAt(
+			glm::vec3(look_at, look_at, look_at),
+			glm::vec3(i, 0, k),
+			glm::vec3(0.0f, 0.0f, 1.0f));
+		view = view * rot_matrix;
+			glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+		
 
 
 
@@ -285,3 +508,4 @@ void keplar(sf::RenderWindow& win) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 }
+

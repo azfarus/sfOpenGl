@@ -23,7 +23,8 @@ int main() {
 	glewInit();
 
 
-	keplar(win);
+	//keplar(win);
+	LA(win);
 	
 
 }

@@ -20,3 +20,4 @@ GLuint shaderSet();
 sf::ContextSettings windowInit();
 GLuint loadTexture(std::string filepath , int flip = 0);
 void keplar(sf::RenderWindow& win);
+void LA(sf::RenderWindow& win);

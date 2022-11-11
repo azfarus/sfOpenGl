@@ -1,102 +1,34 @@
 #pragma once
 #include"StandardFunctions.h"
+#include<math.h>
+#include<glm/gtc/random.hpp>
 
-
-
-
-class plane {
-private:
-	std::vector<float> buffer;
-	std::vector<GLuint> element;
-	GLuint* element_pointer;
-	GLint transformation;
-	float* buffer_pointer;
-	float w, h , z;
-	glm::vec3 origin;
-	const float pi;
-	
-
-	glm::mat4  trans;
-public:
-	plane(float width, float height , glm::vec3 origin , GLint transf) : pi(3.14159) {
-		this->origin = origin;
-		w = width ;
-		h = height;
-		z = origin.z;
-		trans = glm::mat4(1.0f);
-		transformation = transf;
-		genVertices();
-	}
-	void genVertices() {
-		if (buffer.size() > 0) return;
-		glm::vec3 color;
-		color.x = 0;
-		color.y = 1;
-		color.z = .8;
-		glm::vec3 a(origin.x, origin.y, origin.z),
-				b(origin.x+w, origin.y, origin.z),
-				c(origin.x, origin.y+h, origin.z),
-				d(origin.x+w, origin.y+h, origin.z);
-		pushVectors(buffer, a, color, glm::vec3(0, 0, 1) , glm::vec2(0,0));
-		pushVectors(buffer, b, color, glm::vec3(0, 0, 1), glm::vec2(1, 0));
-		pushVectors(buffer, c, color, glm::vec3(0, 0, 1), glm::vec2(0, 1));
-		pushVectors(buffer, d, color, glm::vec3(0, 0, 1), glm::vec2(1, 1));
-
-		
-
-		buffer_pointer = &buffer[0];
-		populateElement();
-	}
-
-	void populateElement() {
-
-		element.push_back(0);
-		element.push_back(1);
-		element.push_back(2);
-		element.push_back(1);
-		element.push_back(2);
-		element.push_back(3);
-
-		element_pointer = &element[0];
-	}
-
-	void draw() {
-		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
-		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, element.size() * sizeof(GLuint), element_pointer, GL_STATIC_DRAW);
-		//glDrawArrays(GL_POINTS, 0, buffer.size());
-		glDrawElements(GL_TRIANGLES, element.size(), GL_UNSIGNED_INT, 0);
-	}
-
-	void position(float x, float y, float z) {
-		trans = glm::translate(glm::mat4(1.0), glm::vec3(x, y, z));
-		
-	}
-
-	void move(float x, float y, float z) {
-		trans = glm::translate(trans, glm::vec3(x, y, z));
-		
-	}
-
-
-};
 
 class base_shape {
 
 protected:
 	glm::mat4x4 pos, rot, scal;
-	glm::vec3 center , color;
+	glm::vec3 center , color ,cam_pos , lookAt;
 	
 	std::vector<float> buffer;
 	std::vector<GLuint> element;
 	
 	GLint transformation , rot_scale;
+	GLint glpoint;
+
 	texture tex;
 	GLuint* element_pointer;
 	float* buffer_pointer;
+
+
 	
 public:
-	base_shape(GLint shader ,glm::vec3 color , std::string filepath = "C:/Users/samaz/Pictures/default.jpg") : tex(filepath) {
+	base_shape(GLint shader ,glm::vec3 color , std::string filepath = "default.png") : tex(filepath) {
+		this->glpoint = glGetUniformLocation(shader, "glpointt");
+		if (this->glpoint <= 0) {
+			std::cout << "Pointerror\n";
+		}
+		else std::cout << "nothing\n";
 		this->transformation= glGetUniformLocation(shader, "trans");;
 		this->rot_scale = glGetUniformLocation(shader, "rot_scale");
 		pos = rot = scal = glm::mat4x4(1.0f);
@@ -127,6 +59,8 @@ public:
 		
 		tex.bind();
 		glm::mat4 trans = pos *rot *scal ;
+
+		glUniform1i(this->glpoint, 0);
 		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot * scal));
 		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
 		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
@@ -137,9 +71,42 @@ public:
 
 	}
 
+	glm::vec3 get_cam() {
+		return glm::vec3(pos * rot * scal * glm::vec4(cam_pos, 1));
+	}
+
+	glm::vec3 get_lookAt() {
+		return glm::vec3(pos * rot * scal * glm::vec4(lookAt, 1));
+	}
+
 	
 };
+class line : public base_shape {
 
+public:
+	line(glm::vec3 start , glm::vec3 end  , glm::vec3 color  , GLint shader):
+	base_shape(shader , color) {
+		pushVectors(this->buffer, start, color, start, glm::vec2(.5, .5));
+		pushVectors(this->buffer, end, color, end, glm::vec2(.5, .5));
+		buffer_pointer = &buffer[0];
+	}
+	
+	void draw() {
+
+		tex.bind();
+		glm::mat4 trans = pos * rot * scal;
+
+		glUniform1i(this->glpoint, 1);
+		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot * scal));
+		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
+		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
+		glDrawArrays(GL_LINES,0, buffer.size());
+
+
+
+	}
+	
+};
 class sphere_shape :public base_shape {
 protected:
 	float radius;
@@ -149,11 +116,13 @@ public:
 	
 	sphere_shape(float radius, glm::vec3 clr , GLint shader, std::string f_path = "earth.jpg") :base_shape( shader ,clr, f_path) {
 		this->radius = radius;
+		lookAt = glm::vec3(-radius , radius, 0);
 		genVertices();
 
 	}
 	sphere_shape(float radius, GLint shader , std::string f_path) :base_shape(shader ,glm::vec3(1,1,1), f_path) {
 		this->radius = radius;
+		lookAt = glm::vec3(-radius, radius, 0);
 	}
 
 	
@@ -170,7 +139,9 @@ public:
 				point.y = radius * cos(phi) * sin(theta);
 				point.z = radius * sin(phi);
 				pushVectors(buffer, point, color, glm::normalize(point), uv);
-				
+				if (i == stacks / 2 && j == sectors / 2) {
+					cam_pos = glm::vec3(point.x *1.25 , point.y * 1.25 , point.z *1.25);
+				}
 
 
 			}
@@ -244,7 +215,7 @@ public:
 		glUniform3fv(lightSrc, 1, glm::value_ptr(center));
 		tex.bind();
 		
-		
+		glUniform1i(this->glpoint, 0);
 		
 		glm::mat4 trans = pos * rot * scal;
 		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot * scal));
@@ -258,6 +229,46 @@ public:
 	}
 	glm::vec3 get_center() {
 		return center;
+	}
+};
+
+class random_pts : public base_shape
+{
+	glm::mat4 custom_trans;
+public:
+	random_pts(GLint shader , glm::vec3 clr , std::string f_path):base_shape(shader , clr , f_path) {
+		custom_trans = glm::mat4(1.0f);
+		genVertices();
+	}
+	void genVertices() {
+		
+		for (unsigned int i = 0; i < 500; i++) {
+			glm::vec3 point = glm::sphericalRand(20.0);
+			pushVectors(buffer , point, color, point, glm::vec2(.5, .5));
+		}
+
+		buffer_pointer = &buffer[0];
+		std::cout << buffer.size()<<std::endl;
+		
+	}
+
+	void ste_customTrans(glm::mat3 custom_transformation) {
+		custom_trans = glm::mat4(custom_transformation);
+	}
+
+	void draw() {
+
+		tex.bind();
+		glm::mat4 trans = pos * rot * scal;
+		glUniform1i(this->glpoint, 1);
+		
+		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot * scal));
+		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(custom_trans));
+		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
+		glDrawArrays(GL_POINTS, 0 ,buffer.size());
+
+
+
 	}
 };
 
