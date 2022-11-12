@@ -166,7 +166,6 @@ void keplar(sf::RenderWindow& win) {
 
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
-	GLint viewU = glGetUniformLocation(shaderProgram, "view");
 	GLint light = glGetUniformLocation(shaderProgram, "camera");
 
 
@@ -177,7 +176,7 @@ void keplar(sf::RenderWindow& win) {
 
 
 
-	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+	
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 
 	
@@ -189,7 +188,7 @@ void keplar(sf::RenderWindow& win) {
 	//line l(glm::vec3(0, 0, 0), glm::vec3(50, -50, 50), glm::vec3(1, 1, 1), shaderProgram);
 
 
-
+	camera c1(shaderProgram);
 
 
 
@@ -239,38 +238,40 @@ void keplar(sf::RenderWindow& win) {
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-				i += .5;
+				
+				c1.rotate_camera_horizontal(-1);
 				
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				i -= .5;
+				c1.rotate_camera_horizontal(1);
 				
 
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
-				k += .5;
+				c1.rotate_camera_vertical(1);
 				
 
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			{
-				k -= .5;
+				c1.rotate_camera_vertical(-1);
 				
 
 			}
 			else if (winEvent.type == sf::Event::MouseWheelMoved) {
-				if (winEvent.mouseWheel.delta > 0) {
+				if (winEvent.mouseWheel.delta < 0) {
 
-					look_at--;
+					c1.move_position(true);
 				}
-				else if (winEvent.mouseWheel.delta < 0) {
-					look_at++;
+				else if (winEvent.mouseWheel.delta > 0) {
+					c1.move_position(false);
 				}
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
 				view_flag = !view_flag;
+				c1 = camera(shaderProgram);
 				while (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
 
 				}
@@ -280,23 +281,13 @@ void keplar(sf::RenderWindow& win) {
 			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 		}
 
-		if (view_flag) {
-			view = glm::lookAt(
-				earth.get_cam(),
-				earth.get_lookAt(),
-				glm::vec3(0.0f, 0.0f, 1.0f)
-			);
-			glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+		if(view_flag)
+		{
+			c1.set_position(earth.get_cam());
+			c1.set_lookat(earth.get_lookAt());
 		}
-		else {
-			view = glm::lookAt(
-				glm::vec3(look_at,look_at , look_at),
-				glm::vec3(i , 0 , k),
-				glm::vec3(0.0f, 0.0f, 1.0f)
-			);
-			glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
-		}
-		
+
+		c1.update();
 
 
 
@@ -345,7 +336,6 @@ void LA(sf::RenderWindow& win) {
 
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
-	GLint viewU = glGetUniformLocation(shaderProgram, "view");
 	GLint light = glGetUniformLocation(shaderProgram, "camera");
 
 
@@ -356,7 +346,7 @@ void LA(sf::RenderWindow& win) {
 
 
 
-	glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+	
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 
 
@@ -377,7 +367,7 @@ void LA(sf::RenderWindow& win) {
 
 	r.ste_customTrans(x);
 
-
+	camera c1(shaderProgram);
 
 
 
@@ -403,24 +393,24 @@ void LA(sf::RenderWindow& win) {
 			
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-				i += .5f;
+				c1.rotate_camera_horizontal(1);
 
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				i -= .5f;
+				c1.rotate_camera_horizontal(-1);
 
 
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
-				k += .5f;
+				c1.rotate_camera_vertical(1);
 
 
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			{
-				k -= .5f;
+				c1.rotate_camera_vertical(-1);
 
 
 			}
@@ -475,34 +465,24 @@ void LA(sf::RenderWindow& win) {
 			else if (winEvent.type == sf::Event::MouseWheelMoved) {
 				if (winEvent.mouseWheel.delta > 0) {
 
-					look_at--;
+					c1.move_position(true);
 				}
 				else if (winEvent.mouseWheel.delta < 0) {
-					look_at++;
+					c1.move_position(false);
 				}
 			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
-				view_flag = !view_flag;
-				while (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
-
-				}
-			}
+		
 
 
 			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 		}
 
 		
-		view = glm::lookAt(
-			glm::vec3(look_at, look_at, look_at),
-			glm::vec3(i, 0, k),
-			glm::vec3(0.0f, 0.0f, 1.0f));
-		view = view * rot_matrix;
-			glUniformMatrix4fv(viewU, 1, GL_FALSE, glm::value_ptr(view));
+		
 		
 
 
-
+		c1.update();
 
 		win.display();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

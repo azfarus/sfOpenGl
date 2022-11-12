@@ -61,7 +61,7 @@ public:
 		glm::mat4 trans = pos *rot *scal ;
 
 		glUniform1i(this->glpoint, 0);
-		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot * scal));
+		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot ));
 		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
 		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, element.size() * sizeof(GLuint), element_pointer, GL_STATIC_DRAW);
@@ -235,15 +235,22 @@ public:
 class random_pts : public base_shape
 {
 	glm::mat4 custom_trans;
+	float spherical_rad;
 public:
 	random_pts(GLint shader , glm::vec3 clr , std::string f_path):base_shape(shader , clr , f_path) {
 		custom_trans = glm::mat4(1.0f);
+		spherical_rad = 300;
 		genVertices();
+	}
+
+	void set_spherical_rad(float rad)
+	{
+		this->spherical_rad = rad;
 	}
 	void genVertices() {
 		
 		for (unsigned int i = 0; i < 500; i++) {
-			glm::vec3 point = glm::sphericalRand(20.0);
+			glm::vec3 point = glm::sphericalRand(spherical_rad);
 			pushVectors(buffer , point, color, point, glm::vec2(.5, .5));
 		}
 
@@ -261,8 +268,7 @@ public:
 		tex.bind();
 		glm::mat4 trans = pos * rot * scal;
 		glUniform1i(this->glpoint, 1);
-		
-		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot * scal));
+
 		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(custom_trans));
 		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
 		glDrawArrays(GL_POINTS, 0 ,buffer.size());
