@@ -1,5 +1,7 @@
 #pragma once
 #define GLEW_STATIC
+#define us_time std::chrono::duration<double , std::ratio<1 , 1000000>>
+#define time_data std::chrono::time_point<std::chrono::steady_clock >
 
 #include <GL/glew.h>
 #include <SFML/Graphics.hpp>
@@ -10,7 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include<iostream>
 #include "stb_image.h"
-
+#include<chrono>
 #include<Windows.h>
 #include<vector>
 
@@ -21,4 +23,5 @@ sf::ContextSettings windowInit();
 GLuint loadTexture(std::string filepath , int flip = 0);
 void keplar(sf::RenderWindow& win);
 void LA(sf::RenderWindow& win);
-void menu(int& x);
+void print(glm::vec3 x);
+void physics(sf::RenderWindow& win);

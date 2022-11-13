@@ -35,6 +35,8 @@ public:
 		element_pointer = NULL;
 		buffer_pointer = NULL;
 		center = glm::vec3(0, 0, 0);
+		cam_pos = center;
+		lookAt = glm::vec3(0, 0, 0);
 		this->color = color;
 	}
 
@@ -50,6 +52,7 @@ public:
 
 	void move(float x, float y, float z) {
 		pos = glm::translate(pos, glm::vec3(x, y, z));
+		center = pos * glm::vec4(0, 0, 0, 1);
 	}
 	void scale(float x , float y , float z) {
 		scal = glm::scale(glm::mat4x4(1.0f), glm::vec3(x, y, z));
@@ -123,10 +126,12 @@ public:
 	sphere_shape(float radius, GLint shader , std::string f_path) :base_shape(shader ,glm::vec3(1,1,1), f_path) {
 		this->radius = radius;
 		lookAt = glm::vec3(-radius, radius, 0);
+		genVertices();
 	}
 
 	
 	void genVertices() {
+		buffer.clear();
 		if (buffer.size() > 0) return;
 		long double uv_increment = 1.0 / (long double)sectors;
 		for (float i = 0; i < stacks; i++) {
@@ -175,6 +180,36 @@ public:
 	}
 };
 
+class sphere_obj : public sphere_shape{
+protected:
+	glm::vec3 velocity;
+	glm::vec3 space_coord;
+public:
+	sphere_obj(GLint shader ,glm::vec3 vel , glm::vec3 pos) : sphere_shape(3 , shader , "moon.jpg") {
+		velocity = vel;
+		space_coord = pos;
+	}
+
+	void update(us_time del) {
+		const float g = -9.806f;
+		double delta = del.count() * 1e-6;
+		velocity += glm::vec3(0, 0, g * delta );
+		
+		if( center.z <  radius)
+		{
+			std::cout << radius << "  ";
+			print(center);
+			velocity = glm::reflect(velocity, glm::vec3(0, 0, 1));
+		}
+		space_coord += glm::vec3(velocity.x * delta , velocity.y * delta , velocity.z * delta );
+		position(space_coord.x, space_coord.y, space_coord.z);
+		draw();
+		return;
+
+	}
+
+};
+
 
 class light_source: public sphere_shape {
 	GLint lightSrc;
@@ -186,6 +221,7 @@ public:
 		genVertices();
 	}
 	void genVertices() {
+		buffer.clear();
 		if (buffer.size() > 0) return;
 		long double uv_increment = 1.0 / (long double)sectors;
 		for (float i = 0; i < stacks; i++) {
@@ -209,7 +245,7 @@ public:
 	}
 
 	void draw() {
-		//center = pos * glm::vec4(center, 1);
+		
 		
 		
 		glUniform3fv(lightSrc, 1, glm::value_ptr(center));
@@ -237,7 +273,7 @@ class random_pts : public base_shape
 	glm::mat4 custom_trans;
 	float spherical_rad;
 public:
-	random_pts(GLint shader , glm::vec3 clr , std::string f_path):base_shape(shader , clr , f_path) {
+	random_pts(GLint shader , glm::vec3 clr , std::string f_path ):base_shape(shader , clr , f_path) {
 		custom_trans = glm::mat4(1.0f);
 		spherical_rad = 300;
 		genVertices();
@@ -246,9 +282,11 @@ public:
 	void set_spherical_rad(float rad)
 	{
 		this->spherical_rad = rad;
+		genVertices();
 	}
 	void genVertices() {
 		
+		buffer.clear();
 		for (unsigned int i = 0; i < 500; i++) {
 			glm::vec3 point = glm::sphericalRand(spherical_rad);
 			pushVectors(buffer , point, color, point, glm::vec2(.5, .5));

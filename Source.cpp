@@ -1,9 +1,14 @@
 #include "StandardFunctions.h"
 #include"buffer_objects.h"
 #include"Shapes.h"
+#include<thread>
 
 using namespace std;
 bool running;
+
+void func(int x) {
+	while(true) std::cout << x;
+}
 
 
 
@@ -22,9 +27,9 @@ int main() {
 	glewExperimental = GL_TRUE;
 	glewInit();
 
-
+	physics(win);
 	//keplar(win);
-	LA(win);
+	//LA(win);
 	
 
 }

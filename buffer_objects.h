@@ -115,6 +115,10 @@ public:
 
 	}
 
+	void reset() {
+		*this = camera(shaderprogram);
+	}
+
 	void set_position(glm::vec3 pos)
 	{
 		this->position = pos;
@@ -142,19 +146,22 @@ public:
 		z2 = this->position.z;
 
 		float x = x2, y = y2, z = z2;
-		float del = (x2 - x1) / abs(x2 - x1);
-		if(fw) x += del * .2f;
-		else x -= del*1.0f;
-		y = ((x - x1) * (y2 - y1)) / (x2 - x1) + y1;
-		z = ((x - x1) * (z2 - z1)) / (x2 - x1) + z1;
+		
+		if(fw) x +=  1.0f;
+		else x -= 1.0f;
+		float divisor = x2 - x1;
+		if (abs(divisor) < .001) divisor = .01;
+		y = ((x - x1) * (y2 - y1)) / (divisor) + y1;
+		z = ((x - x1) * (z2 - z1)) / (divisor) + z1;
 
 		this->position = glm::vec3(x, y, z);
+		this->look_at = position - look_at_finder;
 		return;
 
 
 	}
 
-	void rotate_camera_horizontal(float dir = 1 ,float  sens = .5)
+	void rotate_camera_horizontal(float dir = 1 ,float  sens = 2)
 	{
 		float amount = dir * sens;
 
@@ -166,7 +173,7 @@ public:
 		this->look_at = position - look_at_finder;
 	}
 
-	void rotate_camera_vertical(float dir = 1, float  sens = .5)
+	void rotate_camera_vertical(float dir = 1, float  sens = 2)
 	{
 		float amount = dir * sens;
 
@@ -176,11 +183,13 @@ public:
 		this->look_at = position - look_at_finder;
 	}
 
-	void update()
+	void update(glm::mat4x4 model_rotate = glm::mat4x4(1.0f))
 	{
 		glm::mat4x4 view = glm::lookAt(this->position, this->look_at, this->axis);
-									
-		glUniformMatrix4fv(this->viewU, 1, GL_FALSE, glm::value_ptr(view));
+		
+		glUniformMatrix4fv(this->viewU, 1, GL_FALSE, glm::value_ptr(view*model_rotate));
 	}
 };
+
+
 

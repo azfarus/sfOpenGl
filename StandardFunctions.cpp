@@ -184,7 +184,7 @@ void keplar(sf::RenderWindow& win) {
 	sphere_shape earth(3, glm::vec3(1, 1, 1),  shaderProgram,  "earth.jpg"),
 				moon(1.5 , glm::vec3(1,1,1) , shaderProgram , "moon.jpg");
 	light_source sun(2.5, shaderProgram , "sun.jpg");
-	random_pts r(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg");
+	random_pts r(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg" );
 	//line l(glm::vec3(0, 0, 0), glm::vec3(50, -50, 50), glm::vec3(1, 1, 1), shaderProgram);
 
 
@@ -197,7 +197,7 @@ void keplar(sf::RenderWindow& win) {
 
 
 
-	float i = 0, j = 0, k = 0, theta = 0, fov = 75 , look_at = 10;
+	float  theta = 0, fov = 75 ;
 	bool view_flag= 0;
 	while (running)
 	{
@@ -296,6 +296,159 @@ void keplar(sf::RenderWindow& win) {
 	}
 }
 
+void physics(sf::RenderWindow& win) {
+	bool running = win.isOpen();
+
+	glm::mat4 proj = glm::perspective<float>(glm::radians(75.0), 1280.0 / 960.0f, .25, 400);
+	
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
+
+
+
+	VAO a;
+	a.bind();
+	VBO b;
+	b.bind();
+	EBO e;
+	e.bind();
+	GLuint shaderProgram = shaderSet();
+
+	attribute pos(shaderProgram, "position", 0),
+		col(shaderProgram, "colour", 3),
+		norm(shaderProgram, "normal", 6),
+		uv(shaderProgram, "uv", 9);
+
+	pos.enable();
+	col.enable();
+	norm.enable();
+	uv.enable(2);
+
+	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
+	
+
+
+    glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+
+
+	sphere_shape s(50, shaderProgram, "sun.jpg");
+
+	light_source l1(3, shaderProgram, "moon.jpg");
+
+	sphere_obj ball(shaderProgram, glm::vec3(3, 0, 0), glm::vec3(0, 0, 15));
+
+	line l(glm::vec3(-100, 0, 0), glm::vec3(100, 0, 0), glm::vec3(1, 0, 0), shaderProgram);
+	line l2(glm::vec3(0, -100, 0), glm::vec3(0, 100, 0), glm::vec3(1, 1, 0), shaderProgram);
+
+	camera c1(shaderProgram);
+
+	time_data prev_time, curr_time;
+	
+	
+    
+	
+	
+	l1.position(100, 10, 0);
+
+	s.position(0, 0, 0);
+
+
+	
+
+	curr_time = prev_time = std::chrono::steady_clock::now();
+	
+
+	
+	
+
+	float  theta = 0, fov = 75;
+	bool view_flag = 0;
+	while (running)
+	{
+
+		curr_time = std::chrono::steady_clock::now();
+		us_time del = curr_time - prev_time;
+		prev_time = curr_time;
+		
+	
+		
+		
+		
+		
+		
+		ball.update(del);
+		l.draw();
+		l2.draw();
+	l1.draw();
+	
+
+		
+		
+		sf::Event winEvent;
+		while (win.pollEvent(winEvent)) {
+			if (winEvent.type == sf::Event::Closed) {
+				running = false;
+				return;
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+
+				c1.rotate_camera_horizontal(-1);
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				c1.rotate_camera_horizontal(1);
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				c1.rotate_camera_vertical(1);
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				c1.rotate_camera_vertical(-1);
+
+
+			}
+			else if (winEvent.type == sf::Event::MouseWheelMoved) {
+				if (winEvent.mouseWheel.delta < 0) {
+
+					c1.move_position(true);
+				}
+				else if (winEvent.mouseWheel.delta > 0) {
+					c1.move_position(false);
+				}
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+				view_flag = !view_flag;
+				c1 = camera(shaderProgram);
+				while (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+
+				}
+			}
+
+
+			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+		}
+
+		
+
+		c1.update();
+
+
+
+		win.display();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+}
+
 
 void LA(sf::RenderWindow& win) {
 
@@ -353,7 +506,7 @@ void LA(sf::RenderWindow& win) {
 
 	
 	random_pts r(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg");
-	line l(glm::vec3(0, 0, 0), glm::vec3(50, 0, 0), glm::vec3(1, 0, 0), shaderProgram);
+	line l( glm::vec3(0, 0, 0), glm::vec3(50, 0, 0), glm::vec3(1, 0, 0), shaderProgram);
 	line ly(glm::vec3(0, 0, 0), glm::vec3(0, 50, 0), glm::vec3(0, 1, 0), shaderProgram);
 	line lz(glm::vec3(0, 0, 0), glm::vec3(0, 0, 50), glm::vec3(0, 0, 1), shaderProgram);
 
@@ -366,6 +519,7 @@ void LA(sf::RenderWindow& win) {
 
 
 	r.ste_customTrans(x);
+	r.set_spherical_rad(20);
 
 	camera c1(shaderProgram);
 
@@ -458,7 +612,7 @@ void LA(sf::RenderWindow& win) {
 
 
 				}
-
+				
 
 
 			}
@@ -471,7 +625,10 @@ void LA(sf::RenderWindow& win) {
 					c1.move_position(false);
 				}
 			}
-		
+			
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				c1.reset();
+			}
 
 
 			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
@@ -482,10 +639,17 @@ void LA(sf::RenderWindow& win) {
 		
 
 
-		c1.update();
+		c1.update(rot_matrix);
 
 		win.display();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 }
 
+
+
+
+
+void print(glm::vec3 x) {
+	std::cout << x.x << " " << x.y << " " << x.z << "\n";
+}
