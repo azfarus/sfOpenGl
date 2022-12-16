@@ -316,3 +316,239 @@ public:
 	}
 };
 
+
+//////////---------------------------Graph Part-----------------------------////////////////////
+class graph : public base_shape {
+private:
+	int type;
+public:
+		//Constructor
+
+	graph(GLint shader, glm::vec3 color, std::string filepath = "default.png") : base_shape(shader, color, filepath) {
+		std::cout << "Enter Type: ";
+		std::cin >> type;
+		genVertices(type);
+	}
+
+	void pushSin(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness) {
+		// z = x + y 
+		v.clear();
+
+
+		const float factor = (abs(fin_x - init_x) / sharpness);
+		for (float x = init_x; x < fin_x; x += factor) {
+			for (float y = init_y; y < fin_y; y += factor) {
+
+				glm::vec3 vertex[4];
+				float arrx[] = { factor , 0 , factor , 0 };
+				float arry[] = { factor , factor , 0 , 0 };
+				float m, n;
+				for (int i = 0; i < 4; i++) {
+
+
+					m = x + arrx[i];
+					n = y + arry[i];
+					vertex[i] = glm::vec3(m, n, asin(sin(m) + sin(n)));
+				}
+				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
+				color = glm::vec3(1, 1, 1);
+				vex01 = vertex[1] - vertex[0];
+				vex02 = vertex[2] - vertex[0];
+				vex31 = vertex[1] - vertex[3];
+				vex32 = vertex[2] - vertex[3];
+
+				cp0 = glm::cross(vex31, vex32);
+				cp3 = glm::cross(vex02, vex01);
+				cp0 = glm::normalize(cp0);
+				cp3 = glm::normalize(cp3);
+				glm::vec2 uv(0, 0);
+				pushVectors(v, vertex[0], color, cp0, uv);
+				pushVectors(v, vertex[1], color, cp0, uv);
+				pushVectors(v, vertex[2], color, cp0, uv);
+
+				pushVectors(v, vertex[3], color, cp3, uv);
+				pushVectors(v, vertex[1], color, cp3, uv);
+				pushVectors(v, vertex[2], color, cp3, uv);
+
+
+
+			}
+		}
+
+	}
+	void pushCos(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness) {
+		// z = x + y cos variant
+		v.clear();
+
+
+		const float factor = (abs(fin_x - init_x) / sharpness);
+		for (float x = init_x; x < fin_x; x += factor) {
+			for (float y = init_y; y < fin_y; y += factor) {
+
+				glm::vec3 vertex[4];
+				float arrx[] = { factor , 0 , factor , 0 };
+				float arry[] = { factor , factor , 0 , 0 };
+				float m, n;
+				for (int i = 0; i < 4; i++) {
+
+
+					m = x + arrx[i];
+					n = y + arry[i];
+					vertex[i] = glm::vec3(m, n, acos(cos(m) + cos(n)));
+				}
+				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
+				color = glm::vec3(1, 1, 1);
+				vex01 = vertex[1] - vertex[0];
+				vex02 = vertex[2] - vertex[0];
+				vex31 = vertex[1] - vertex[3];
+				vex32 = vertex[2] - vertex[3];
+
+				cp0 = glm::cross(vex31, vex32);
+				cp3 = glm::cross(vex02, vex01);
+				cp0 = glm::normalize(cp0);
+				cp3 = glm::normalize(cp3);
+				glm::vec2 uv(0, 0);
+				pushVectors(v, vertex[0], color, cp0, uv);
+				pushVectors(v, vertex[1], color, cp0, uv);
+				pushVectors(v, vertex[2], color, cp0, uv);
+
+				pushVectors(v, vertex[3], color, cp3, uv);
+				pushVectors(v, vertex[1], color, cp3, uv);
+				pushVectors(v, vertex[2], color, cp3, uv);
+
+
+
+			}
+		}
+
+	}
+	void pushCubic(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness) {
+		// z = x*x*x + y*y*y
+		v.clear();
+
+
+		const float factor = (abs(fin_x - init_x) / sharpness);
+		for (float x = init_x; x < fin_x; x += factor) {
+			for (float y = init_y; y < fin_y; y += factor) {
+
+				glm::vec3 vertex[4];
+				float arrx[] = { factor , 0 , factor , 0 };
+				float arry[] = { factor , factor , 0 , 0 };
+				float m, n;
+				for (int i = 0; i < 4; i++) {
+
+
+					m = x + arrx[i];
+					n = y + arry[i];
+					vertex[i] = glm::vec3(m, n, (m*m*m)+(n*n*n));
+				}
+				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
+				color = glm::vec3(1, 1, 1);
+				vex01 = vertex[1] - vertex[0];
+				vex02 = vertex[2] - vertex[0];
+				vex31 = vertex[1] - vertex[3];
+				vex32 = vertex[2] - vertex[3];
+
+				cp0 = glm::cross(vex31, vex32);
+				cp3 = glm::cross(vex02, vex01);
+				cp0 = glm::normalize(cp0);
+				cp3 = glm::normalize(cp3);
+				glm::vec2 uv(0, 0);
+				pushVectors(v, vertex[0], color, cp0, uv);
+				pushVectors(v, vertex[1], color, cp0, uv);
+				pushVectors(v, vertex[2], color, cp0, uv);
+
+				pushVectors(v, vertex[3], color, cp3, uv);
+				pushVectors(v, vertex[1], color, cp3, uv);
+				pushVectors(v, vertex[2], color, cp3, uv);
+
+
+
+			}
+		}
+
+	}
+	void pushEll(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness) {
+		// z = Ellipse
+		v.clear();
+		float a = 6.5F;
+		float b = 10.0F;
+		float c = 3.0F;
+		a *= a; b *= b; c *= c;
+
+		const float factor = (abs(fin_x - init_x) / sharpness);
+		for (float x = init_x; x < fin_x; x += factor) {
+			for (float y = init_y; y < fin_y; y += factor) {
+
+				glm::vec3 vertex[4];
+				float arrx[] = { factor , 0 , factor , 0 };
+				float arry[] = { factor , factor , 0 , 0 };
+				float m, n;
+				float sqm, sqn;
+				float mn;
+				for (int i = 0; i < 4; i++) {
+
+
+					m = x + arrx[i];
+					n = y + arry[i];
+					sqm = m * m;
+					sqm /= a;
+					
+					sqn = n * n;
+					sqn /= b;
+
+					mn = (1 - sqm - sqn) * c;;
+					vertex[i] = glm::vec3(m, n, sqrt(mn)); //x^2/a^2+y^2/b^2+z^2/c^2 = 1
+				}
+				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
+				color = glm::vec3(1, 1, 1);
+				vex01 = vertex[1] - vertex[0];
+				vex02 = vertex[2] - vertex[0];
+				vex31 = vertex[1] - vertex[3];
+				vex32 = vertex[2] - vertex[3];
+
+				cp0 = glm::cross(vex31, vex32);
+				cp3 = glm::cross(vex02, vex01);
+				cp0 = glm::normalize(cp0);
+				cp3 = glm::normalize(cp3);
+				glm::vec2 uv(0, 0);
+				pushVectors(v, vertex[0], color, cp0, uv);
+				pushVectors(v, vertex[1], color, cp0, uv);
+				pushVectors(v, vertex[2], color, cp0, uv);
+
+				pushVectors(v, vertex[3], color, cp3, uv);
+				pushVectors(v, vertex[1], color, cp3, uv);
+				pushVectors(v, vertex[2], color, cp3, uv);
+
+
+
+			}
+		}
+
+	}
+	void genVertices(int t) {
+		buffer.clear();
+		if (buffer.size() > 0) return;
+
+		switch (t)
+		{
+			case 1:
+				pushSin(buffer, -10, 10, -10, 10, 100);//sinx
+				buffer_pointer = &buffer[0];
+				break;
+			case 2:
+				pushCos(buffer, -10, 10, -10, 10, 100);//cosx
+				buffer_pointer = &buffer[0];
+				break;
+			case 3:
+				pushCubic(buffer, -10, 10, -10, 10, 100);//Cubic
+				buffer_pointer = &buffer[0];
+				break;
+			case 4:
+				pushEll(buffer, -10, 10, -10, 10, 100);//Ellipse
+				buffer_pointer = &buffer[0];
+		}
+		
+		
+	}
+};
