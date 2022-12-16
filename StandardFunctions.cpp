@@ -530,7 +530,8 @@ void LA(sf::RenderWindow& win) {
 	bool view_flag = false;
 	while (running)
 	{
-		l.draw();
+		
+		ll.draw();
 		r.draw();
 		l.draw();
 		ly.draw();

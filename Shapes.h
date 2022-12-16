@@ -362,13 +362,13 @@ public:
 				cp0 = glm::normalize(cp0);
 				cp3 = glm::normalize(cp3);
 				glm::vec2 uv(0, 0);
-				pushVectors(v, vertex[0], color, cp0, uv);
-				pushVectors(v, vertex[1], color, cp0, uv);
-				pushVectors(v, vertex[2], color, cp0, uv);
+				pushVectors(v, vertex[0], color, -cp0, uv);
+				pushVectors(v, vertex[1], color, -cp0, uv);
+				pushVectors(v, vertex[2], color, -cp0, uv);
 
-				pushVectors(v, vertex[3], color, cp3, uv);
-				pushVectors(v, vertex[1], color, cp3, uv);
-				pushVectors(v, vertex[2], color, cp3, uv);
+				pushVectors(v, vertex[3], color, -cp3, uv);
+				pushVectors(v, vertex[1], color, -cp3, uv);
+				pushVectors(v, vertex[2], color, -cp3, uv);
 
 
 
@@ -408,13 +408,13 @@ public:
 				cp0 = glm::normalize(cp0);
 				cp3 = glm::normalize(cp3);
 				glm::vec2 uv(0, 0);
-				pushVectors(v, vertex[0], color, cp0, uv);
-				pushVectors(v, vertex[1], color, cp0, uv);
-				pushVectors(v, vertex[2], color, cp0, uv);
+				pushVectors(v, vertex[0], color, -cp0, uv);
+				pushVectors(v, vertex[1], color, -cp0, uv);
+				pushVectors(v, vertex[2], color, -cp0, uv);
 
-				pushVectors(v, vertex[3], color, cp3, uv);
-				pushVectors(v, vertex[1], color, cp3, uv);
-				pushVectors(v, vertex[2], color, cp3, uv);
+				pushVectors(v, vertex[3], color, -cp3, uv);
+				pushVectors(v, vertex[1], color, -cp3, uv);
+				pushVectors(v, vertex[2], color, -cp3, uv);
 
 
 
@@ -454,13 +454,13 @@ public:
 				cp0 = glm::normalize(cp0);
 				cp3 = glm::normalize(cp3);
 				glm::vec2 uv(0, 0);
-				pushVectors(v, vertex[0], color, cp0, uv);
-				pushVectors(v, vertex[1], color, cp0, uv);
-				pushVectors(v, vertex[2], color, cp0, uv);
+				pushVectors(v, vertex[0], color, -cp0, uv);
+				pushVectors(v, vertex[1], color, -cp0, uv);
+				pushVectors(v, vertex[2], color, -cp0, uv);
 
-				pushVectors(v, vertex[3], color, cp3, uv);
-				pushVectors(v, vertex[1], color, cp3, uv);
-				pushVectors(v, vertex[2], color, cp3, uv);
+				pushVectors(v, vertex[3], color, -cp3, uv);
+				pushVectors(v, vertex[1], color, -cp3, uv);
+				pushVectors(v, vertex[2], color, -cp3, uv);
 
 
 
@@ -512,13 +512,13 @@ public:
 				cp0 = glm::normalize(cp0);
 				cp3 = glm::normalize(cp3);
 				glm::vec2 uv(0, 0);
-				pushVectors(v, vertex[0], color, cp0, uv);
-				pushVectors(v, vertex[1], color, cp0, uv);
-				pushVectors(v, vertex[2], color, cp0, uv);
+				pushVectors(v, vertex[0], color, -cp0, uv);
+				pushVectors(v, vertex[1], color, -cp0, uv);
+				pushVectors(v, vertex[2], color, -cp0, uv);
 
-				pushVectors(v, vertex[3], color, cp3, uv);
-				pushVectors(v, vertex[1], color, cp3, uv);
-				pushVectors(v, vertex[2], color, cp3, uv);
+				pushVectors(v, vertex[3], color, -cp3, uv);
+				pushVectors(v, vertex[1], color, -cp3, uv);
+				pushVectors(v, vertex[2], color, -cp3, uv);
 
 
 
@@ -559,7 +559,7 @@ public:
 
 			tex.bind();
 			glm::mat4 trans = pos * rot * scal;
-			glUniform1i(this->glpoint, 0);
+			glUniform1i(this->glpoint, 2);
 
 			glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
 			glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
