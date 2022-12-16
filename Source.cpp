@@ -27,9 +27,9 @@ int main() {
 	glewExperimental = GL_TRUE;
 	glewInit();
 
-	physics(win);
+	//physics(win);
 	//keplar(win);
-	//LA(win);
+	LA(win);
 	
 
 }

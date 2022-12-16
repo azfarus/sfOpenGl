@@ -423,7 +423,7 @@ public:
 
 	}
 	void pushCubic(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness) {
-		// z = x*x*x + y*y*y
+		// c*z = b*x*x*x + a*y*y*y
 		v.clear();
 
 
@@ -549,6 +549,24 @@ public:
 				buffer_pointer = &buffer[0];
 		}
 		
+		
+	}
+
+
+	void draw()
+	{
+		
+
+			tex.bind();
+			glm::mat4 trans = pos * rot * scal;
+			glUniform1i(this->glpoint, 0);
+
+			glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
+			glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
+			glDrawArrays(GL_TRIANGLES, 0, buffer.size());
+
+
+
 		
 	}
 };

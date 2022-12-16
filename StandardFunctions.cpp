@@ -497,18 +497,19 @@ void LA(sf::RenderWindow& win) {
 
 
 
-
+	
 
 	
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 
 
 
-	
+	light_source ll(1, shaderProgram, "sun.jpg");
 	random_pts r(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg");
 	line l( glm::vec3(0, 0, 0), glm::vec3(50, 0, 0), glm::vec3(1, 0, 0), shaderProgram);
 	line ly(glm::vec3(0, 0, 0), glm::vec3(0, 50, 0), glm::vec3(0, 1, 0), shaderProgram);
 	line lz(glm::vec3(0, 0, 0), glm::vec3(0, 0, 50), glm::vec3(0, 0, 1), shaderProgram);
+	graph g1(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg");
 
 	glm::mat4x4 rot_matrix(1.0f);
 
@@ -522,19 +523,19 @@ void LA(sf::RenderWindow& win) {
 	r.set_spherical_rad(20);
 
 	camera c1(shaderProgram);
-
+	ll.position(0, 0, 50);
 
 
 	float i = 0, j = 0, k = 0, theta = 0, fov = 75, look_at = 40;
 	bool view_flag = false;
 	while (running)
 	{
-		
+		l.draw();
 		r.draw();
 		l.draw();
 		ly.draw();
 		lz.draw();
-
+		g1.draw();
 
 
 
