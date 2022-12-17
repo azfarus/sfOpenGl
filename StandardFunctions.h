@@ -25,3 +25,4 @@ void keplar(sf::RenderWindow& win);
 void LA(sf::RenderWindow& win);
 void print(glm::vec3 x);
 void physics(sf::RenderWindow& win);
+void GraphPlotter(sf::RenderWindow& win);

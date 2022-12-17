@@ -648,7 +648,120 @@ void LA(sf::RenderWindow& win) {
 	}
 }
 
+void GraphPlotter(sf::RenderWindow& win)
+{
+	bool running = win.isOpen();
 
+	glm::mat4  trans = glm::mat4(1.0f);
+	glm::mat4 proj = glm::perspective<float>(glm::radians(75.0), 1280.0 / 960.0f, .25, 400);
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(10.0f, 10.0f, 10.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 1.0f)
+	);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
+
+	VAO a;
+	a.bind();
+	VBO b;
+	b.bind();
+	EBO e;
+	e.bind();
+	GLuint shaderProgram = shaderSet();
+
+	attribute pos(shaderProgram, "position", 0),
+		col(shaderProgram, "colour", 3),
+		norm(shaderProgram, "normal", 6),
+		uv(shaderProgram, "uv", 9);
+
+	pos.enable();
+	col.enable();
+	norm.enable();
+	uv.enable(2);
+
+
+	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
+	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
+	GLint light = glGetUniformLocation(shaderProgram, "camera");
+
+
+	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+
+	graph gr(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg");
+	gr.setParameters();
+
+	camera c1(shaderProgram);
+
+	float  theta = 0, fov = 75;
+	bool view_flag = 0;
+
+	while (running)
+	{
+		gr.draw();
+
+		sf::Event winEvent;
+		while (win.pollEvent(winEvent)) {
+			if (winEvent.type == sf::Event::Closed) {
+				running = false;
+				return;
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+
+				c1.rotate_camera_horizontal(-1);
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				c1.rotate_camera_horizontal(1);
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				c1.rotate_camera_vertical(1);
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				c1.rotate_camera_vertical(-1);
+
+
+			}
+			else if (winEvent.type == sf::Event::MouseWheelMoved) {
+				if (winEvent.mouseWheel.delta < 0) {
+
+					c1.move_position(true);
+				}
+				else if (winEvent.mouseWheel.delta > 0) {
+					c1.move_position(false);
+				}
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+				view_flag = !view_flag;
+				c1 = camera(shaderProgram);
+				while (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+
+				}
+			}
+
+
+			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+		}
+
+		c1.update();
+
+
+
+		win.display();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+}
 
 
 

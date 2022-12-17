@@ -29,7 +29,8 @@ int main() {
 
 	//physics(win);
 	//keplar(win);
-	LA(win);
+	//LA(win);
+	GraphPlotter(win);
 	
 
 }

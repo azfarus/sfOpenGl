@@ -321,6 +321,7 @@ public:
 class graph : public base_shape {
 private:
 	int type;
+	float a, b, c;
 public:
 		//Constructor
 
@@ -328,6 +329,25 @@ public:
 		std::cout << "Enter Type: ";
 		std::cin >> type;
 		genVertices(type);
+	}
+	//Setter Function
+	void setParameters()
+	{
+		std::cout << "Enter the values of a,b,c for the equations: ";
+		std::cin >> a >> b >> c;
+	}
+	//Getter
+	float getA()
+	{
+		return a;
+	}
+	float getB()
+	{
+		return b;
+	}
+	float getC()
+	{
+		return c;
 	}
 
 	void pushSin(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness) {
@@ -471,10 +491,10 @@ public:
 	void pushEll(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness) {
 		// z = Ellipse
 		v.clear();
-		float a = 6.5F;
-		float b = 10.0F;
-		float c = 3.0F;
-		a *= a; b *= b; c *= c;
+
+		float sqA = a * a;
+		float sqB = b * b;
+		float sqC = c * c;
 
 		const float factor = (abs(fin_x - init_x) / sharpness);
 		for (float x = init_x; x < fin_x; x += factor) {
@@ -492,12 +512,12 @@ public:
 					m = x + arrx[i];
 					n = y + arry[i];
 					sqm = m * m;
-					sqm /= a;
+					sqm /= sqA;
 					
 					sqn = n * n;
-					sqn /= b;
+					sqn /= sqB;
 
-					mn = (1 - sqm - sqn) * c;;
+					mn = (1 - sqm - sqn) * sqC;;
 					vertex[i] = glm::vec3(m, n, sqrt(mn)); //x^2/a^2+y^2/b^2+z^2/c^2 = 1
 				}
 				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
