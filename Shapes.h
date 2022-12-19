@@ -185,11 +185,13 @@ protected:
 	glm::vec3 velocity;
 	glm::vec3 space_coord;
 	float g;
+	float radius;
 public:
 	sphere_obj(GLint shader ,glm::vec3 vel , glm::vec3 pos) : sphere_shape(3 , shader , "moon.jpg") {
 		velocity = vel;
 		space_coord = pos;
 		g = -9.806F;
+		radius = 2.0F;
 	}
 
 	void update(us_time del, float grav) {
@@ -208,6 +210,17 @@ public:
 		draw();
 		return;
 
+	}
+
+	void setRad()
+	{
+		std::cout << "Enter Radius: ";
+		std::cin >> radius;
+	}
+
+	float getRad()
+	{
+		return radius;
 	}
 
 };

@@ -223,8 +223,9 @@ void keplar(sf::RenderWindow& win) {
 		earth.position(earth_x, earth_y, earth_z);
 		moon.position(moon_x, moon_y, moon_z);
 		sun.position(0, 0, 0);
-		earth.rotate(glm::degrees(.000005 * 365) , glm::vec3(0,0,1));
-		moon.rotate(glm::degrees(-.000005 * 13.36996), glm::vec3(0, 0, 1));
+		float inc_neg = 0 - inc;
+		earth.rotate(glm::degrees(inc * 365) , glm::vec3(0,0,1));
+		moon.rotate(glm::degrees(inc_neg * 13.36996), glm::vec3(0, 0, 1));
 
 		sun.draw();
 		earth.draw();
@@ -737,11 +738,6 @@ void GraphPlotter(sf::RenderWindow& win)
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
 	GLint light = glGetUniformLocation(shaderProgram, "camera");
-
-
-
-
-
 
 
 
