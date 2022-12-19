@@ -180,32 +180,47 @@ public:
 	}
 };
 
-class sphere_obj : public sphere_shape{
+class sphere_obj : public sphere_shape {
 protected:
 	glm::vec3 velocity;
 	glm::vec3 space_coord;
+	float g;
+	float radius;
 public:
-	sphere_obj(GLint shader ,glm::vec3 vel , glm::vec3 pos) : sphere_shape(3 , shader , "moon.jpg") {
+	sphere_obj(GLint shader, glm::vec3 vel, glm::vec3 pos) : sphere_shape(3, shader, "moon.jpg") {
 		velocity = vel;
 		space_coord = pos;
+		g = -9.806F;
+		radius = 2.0F;
 	}
 
-	void update(us_time del) {
-		const float g = -9.806f;
+	void update(us_time del, float grav) {
+		g = grav;
 		double delta = del.count() * 1e-6;
-		velocity += glm::vec3(0, 0, g * delta );
-		
-		if( center.z <  radius)
+		velocity += glm::vec3(0, 0, g * delta);
+
+		if (center.z < radius)
 		{
 			std::cout << radius << "  ";
 			print(center);
 			velocity = glm::reflect(velocity, glm::vec3(0, 0, 1));
 		}
-		space_coord += glm::vec3(velocity.x * delta , velocity.y * delta , velocity.z * delta );
+		space_coord += glm::vec3(velocity.x * delta, velocity.y * delta, velocity.z * delta);
 		position(space_coord.x, space_coord.y, space_coord.z);
 		draw();
 		return;
 
+	}
+
+	void setRad()
+	{
+		std::cout << "Enter Radius: ";
+		std::cin >> radius;
+	}
+
+	float getRad()
+	{
+		return radius;
 	}
 
 };

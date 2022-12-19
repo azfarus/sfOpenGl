@@ -202,28 +202,40 @@ void keplar(sf::RenderWindow& win) {
 
 
 
-	float  theta = 0, fov = 75 ;
-	bool view_flag= 0;
+	float  theta = 0, fov = 75;
+	float inc;
+	bool view_flag = 0;
+
+	//Pseudo prompting
+	std::cout << "Please Enter How Fast You want the rotation (Suggested value = 0.000005) : ";
+	std::cin >> inc;
+
+
+
+
+
 	while (running)
 	{
-		theta += .000005;
+		//theta += .000005;
+		theta += inc;
 		float earth_x, earth_y, earth_z,
-		moon_x, moon_y, moon_z;
+			moon_x, moon_y, moon_z;
 
 		earth_x = 25 * sin(theta);
 		earth_y = 25 * cos(theta);
 		earth_z = 0;
 
-		
-		moon_x = earth_x + 12 * sin(theta*13.36);
+
+		moon_x = earth_x + 12 * sin(theta * 13.36);
 		moon_y = earth_y + 12 * cos(theta * 13.36);
-		moon_z = earth_z + 4.5*sin(theta * 13.36);
+		moon_z = earth_z + 4.5 * sin(theta * 13.36);
 
 		earth.position(earth_x, earth_y, earth_z);
 		moon.position(moon_x, moon_y, moon_z);
 		sun.position(0, 0, 0);
-		earth.rotate(glm::degrees(.000005 * 365) , glm::vec3(0,0,1));
-		moon.rotate(glm::degrees(-.000005 * 13.36996), glm::vec3(0, 0, 1));
+		float inc_neg = 0 - inc;
+		earth.rotate(glm::degrees(inc * 365), glm::vec3(0, 0, 1));
+		moon.rotate(glm::degrees(inc_neg * 13.36996), glm::vec3(0, 0, 1));
 
 		sun.draw();
 		earth.draw();
@@ -373,6 +385,13 @@ void physics(sf::RenderWindow& win) {
 	camera c1(shaderProgram);
 
 	time_data prev_time, curr_time;
+	//PseudoPrompting for g
+	float grav;
+	std::cout << "Enter preferred g: ";
+	std::cin >> grav;
+	//For converting to minus
+	grav = 0 - grav;
+
 	
 	
     
@@ -406,7 +425,7 @@ void physics(sf::RenderWindow& win) {
 		
 		
 		
-		ball.update(del);
+		ball.update(del, grav);
 		l.draw();
 		l2.draw();
 	l1.draw();
@@ -546,9 +565,44 @@ void LA(sf::RenderWindow& win)
 	glm::mat4x4 rot_matrix(1.0f);
 
 
-	glm::mat3 x(glm::vec3(1, 0, 1)
-		, glm::vec3(1, 0, 1)
-		, glm::vec3(1, 1, 0 ));
+	//Prompting for Input 
+	glm::vec3 first, second, third;
+	int r1, r2, r3;
+
+	glm::vec3 row1, row2, row3;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			std::cout << "Enter the elements of row no." << i + 1 << " of a 3x3 matrix : ";
+			std::cin >> r1 >> r2 >> r3;
+		}
+		if (i == 0)
+		{
+			row1.x = r1;
+			row1.y = r2;
+			row1.z = r3;
+		}
+		else if (i == 1)
+		{
+			row2.x = r1;
+			row2.y = r2;
+			row2.z = r3;
+		}
+		else
+		{
+			row3.x = r1;
+			row3.y = r2;
+			row3.z = r3;
+		}
+	}
+
+	//Previous Hardcode below
+	//glm::mat3 x(glm::vec3(1, 0, 1)
+	//	, glm::vec3(1, 0, 1)
+	//	, glm::vec3(1, 1, 0 ));
+
+	glm::mat3 x(row1, row2, row3);
 
 
 	r.ste_customTrans(x);
