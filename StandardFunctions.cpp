@@ -192,16 +192,22 @@ void keplar(sf::RenderWindow& win) {
 
 
 
-
-
-
-
-
-	float  theta = 0, fov = 75 ;
+	float  theta = 0, fov = 75;
+	float inc;
 	bool view_flag= 0;
+
+	//Pseudo prompting
+	std::cout << "Please Enter How Fast You want the rotation (Suggested value = 0.000005) : ";
+	std::cin >> inc;
+
+
+
+
+	
 	while (running)
 	{
-		theta += .000005;
+		//theta += .000005;
+		theta += inc;
 		float earth_x, earth_y, earth_z,
 		moon_x, moon_y, moon_z;
 
@@ -365,6 +371,15 @@ void physics(sf::RenderWindow& win) {
 
 	float  theta = 0, fov = 75;
 	bool view_flag = 0;
+
+	//PseudoPrompting for g
+	float grav;
+	std::cout << "Enter preferred g: ";
+	std::cin >> grav;
+	//For converting to minus
+	grav = 0 - grav;
+
+
 	while (running)
 	{
 
@@ -378,10 +393,10 @@ void physics(sf::RenderWindow& win) {
 		
 		
 		
-		ball.update(del);
+		ball.update(del, grav);
 		l.draw();
 		l2.draw();
-	l1.draw();
+		l1.draw();
 	
 
 		
@@ -513,10 +528,44 @@ void LA(sf::RenderWindow& win) {
 
 	glm::mat4x4 rot_matrix(1.0f);
 
+	//Prompting for Input 
+	glm::vec3 first, second, third;
+	int r1, r2, r3;
 
-	glm::mat3 x(glm::vec3(1, 0, 1)
-		, glm::vec3(1, 0, 1)
-		, glm::vec3(1, 1, 0 ));
+	glm::vec3 row1, row2, row3;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			std::cout << "Enter the elements of row no." << i+1 << " of a 3x3 matrix : ";
+			std::cin >> r1 >> r2 >> r3;
+		}
+		if (i == 0)
+		{
+			row1.x = r1;
+			row1.y = r2;
+			row1.z = r3;
+		}
+		else if (i == 1)
+		{
+			row2.x = r1;
+			row2.y = r2;
+			row2.z = r3;
+		}
+		else
+		{
+			row3.x = r1;
+			row3.y = r2;
+			row3.z = r3;
+		}
+	}
+
+	//Previous Hardcode below
+	//glm::mat3 x(glm::vec3(1, 0, 1)
+	//	, glm::vec3(1, 0, 1)
+	//	, glm::vec3(1, 1, 0 ));
+
+	glm::mat3 x(row1, row2, row3);
 
 
 	r.ste_customTrans(x);
@@ -664,6 +713,8 @@ void GraphPlotter(sf::RenderWindow& win)
 	glEnable(GL_PROGRAM_POINT_SIZE);
 
 
+
+
 	VAO a;
 	a.bind();
 	VBO b;
@@ -688,19 +739,40 @@ void GraphPlotter(sf::RenderWindow& win)
 	GLint light = glGetUniformLocation(shaderProgram, "camera");
 
 
+
+
+
+
+
+
+
+
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 
+
+	glm::mat4x4 rot_matrix(1.0f);
+
+
+	glm::mat3 x(glm::vec3(1, 0, 1)
+		, glm::vec3(1, 0, 1)
+		, glm::vec3(1, 1, 0));
+
+
+	camera c1(shaderProgram);
+	light_source ll(0.1, shaderProgram, "sun.jpg");
+	ll.position(0, 0, 50);
 	graph gr(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg");
 	gr.setParameters();
 
-	camera c1(shaderProgram);
 
-	float  theta = 0, fov = 75;
-	bool view_flag = 0;
-
+	float i = 0, j = 0, k = 0, theta = 0, fov = 75, look_at = 40;
+	bool view_flag = false;
 	while (running)
 	{
+
+		ll.draw();
 		gr.draw();
+
 
 		sf::Event winEvent;
 		while (win.pollEvent(winEvent)) {
@@ -711,13 +783,12 @@ void GraphPlotter(sf::RenderWindow& win)
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-
-				c1.rotate_camera_horizontal(-1);
+				c1.rotate_camera_horizontal(1);
 
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				c1.rotate_camera_horizontal(1);
+				c1.rotate_camera_horizontal(-1);
 
 
 			}
@@ -733,37 +804,86 @@ void GraphPlotter(sf::RenderWindow& win)
 
 
 			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(1, 0, 0));
+
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 1, 0));
+
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 0, 1));
+
+
+				}
+
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(1, 0, 0));
+
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 1, 0));
+
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 0, 1));
+
+
+				}
+
+
+
+			}
 			else if (winEvent.type == sf::Event::MouseWheelMoved) {
-				if (winEvent.mouseWheel.delta < 0) {
+				if (winEvent.mouseWheel.delta > 0) {
 
 					c1.move_position(true);
 				}
-				else if (winEvent.mouseWheel.delta > 0) {
+				else if (winEvent.mouseWheel.delta < 0) {
 					c1.move_position(false);
 				}
 			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
-				view_flag = !view_flag;
-				c1 = camera(shaderProgram);
-				while (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
 
-				}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				c1.reset();
 			}
 
 
 			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 		}
 
-		c1.update();
 
 
+
+
+
+		c1.update(rot_matrix);
 
 		win.display();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
+
+
+
 }
-
-
 
 void print(glm::vec3 x) {
 	std::cout << x.x << " " << x.y << " " << x.z << "\n";

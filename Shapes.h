@@ -184,14 +184,16 @@ class sphere_obj : public sphere_shape{
 protected:
 	glm::vec3 velocity;
 	glm::vec3 space_coord;
+	float g;
 public:
 	sphere_obj(GLint shader ,glm::vec3 vel , glm::vec3 pos) : sphere_shape(3 , shader , "moon.jpg") {
 		velocity = vel;
 		space_coord = pos;
+		g = -9.806F;
 	}
 
-	void update(us_time del) {
-		const float g = -9.806f;
+	void update(us_time del, float grav) {
+		g = grav;
 		double delta = del.count() * 1e-6;
 		velocity += glm::vec3(0, 0, g * delta );
 		
