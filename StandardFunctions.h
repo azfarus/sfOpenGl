@@ -15,6 +15,7 @@
 #include<chrono>
 #include<Windows.h>
 #include<vector>
+#include<mutex>
 
 #define xthresh 530
 #define ythresh 200
@@ -103,6 +104,27 @@ public:
 	}
 };
 
+class data_object
+{
+	int x;
+	std::mutex m;
+public:
+	data_object()
+	{
+		x = 0;
+
+	}
+	int get_x()
+	{
+		return x;
+	}
+	int set_x(int val)
+	{
+		m.lock();
+		x = val;
+		m.unlock();
+	}
+};
 
 void pushVectors(std::vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c , glm::vec2 d);
 void pushvals(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness);
@@ -112,9 +134,9 @@ GLuint loadTexture(std::string filepath , int flip = 0);
 void keplar(sf::RenderWindow& win);
 void LA(sf::RenderWindow& win);
 void print(glm::vec3 x);
-void physics(sf::RenderWindow& win);
-int menuscreen(sf::RenderWindow& win);
-void featuremenu1(sf::RenderWindow& win);
+void physics(sf::RenderWindow& win , data_object& d);
+int menuscreen(sf::RenderWindow& win );
+void featuremenu1(sf::RenderWindow& win , data_object &d);
 void featuremenu2(sf::RenderWindow& win);
 void featuremenu3(sf::RenderWindow& win);
 

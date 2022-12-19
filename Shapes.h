@@ -197,8 +197,6 @@ public:
 		
 		if( center.z <  radius)
 		{
-			std::cout << radius << "  ";
-			print(center);
 			velocity = glm::reflect(velocity, glm::vec3(0, 0, 1));
 		}
 		space_coord += glm::vec3(velocity.x * delta , velocity.y * delta , velocity.z * delta );

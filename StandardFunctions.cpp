@@ -320,7 +320,7 @@ void keplar(sf::RenderWindow& win) {
 
 }
 
-void physics(sf::RenderWindow& win) {
+void physics(sf::RenderWindow& win  , data_object& d) {
 	bool running = win.isOpen();
 
 	Button exit;
@@ -409,8 +409,7 @@ void physics(sf::RenderWindow& win) {
 		ball.update(del);
 		l.draw();
 		l2.draw();
-	l1.draw();
-	
+	    l1.draw();
 
 		
 		
@@ -797,14 +796,14 @@ int menuscreen(sf::RenderWindow &win)
 	}
 }
 
-void featuremenu1(sf::RenderWindow& win)
+void featuremenu1(sf::RenderWindow& win , data_object& d)
 {
 	sf::RectangleShape background2(sf::Vector2f(750.0f, 900.0f));
 	background2.setPosition(260.0f, 0.0f);
 	sf::Texture menu_bg1;
 	menu_bg1.loadFromFile("bounce_menu.png");
 	background2.setTexture(&menu_bg1);
-
+	int i = 0;
 	while (win.isOpen())
 	{
 		sf::Event eve;
@@ -812,6 +811,7 @@ void featuremenu1(sf::RenderWindow& win)
 		{
 			if (eve.type == sf::Event::MouseButtonPressed)
 			{
+				d.set_x(i++);
 				std::cout << "Hey\n";
 			}
 			if (eve.type == sf::Event::Closed)

@@ -16,7 +16,7 @@ void func(int x) {
 
 
 int main() {
-
+	data_object d;
 	sf::ContextSettings set = windowInit();
 	sf::RenderWindow win(sf::VideoMode(1280, 960), "Xplore", sf::Style::Close);
 	int x = menuscreen(win);
@@ -25,7 +25,7 @@ int main() {
 
 		sf::RenderWindow mwin(sf::VideoMode(1280, 960), "Xplore", sf::Style::Close);
 		mwin.setActive(false);
-		std::thread thread1(&featuremenu1, std::ref(mwin));
+		std::thread thread1(&featuremenu1, std::ref(mwin) , std::ref(d));
 		
 		
 
@@ -34,7 +34,7 @@ int main() {
 
 		glewExperimental = GL_TRUE;
 		glewInit();
-		physics(fwin);
+		physics(fwin , d);
 
 		
 
