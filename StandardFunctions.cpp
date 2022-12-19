@@ -2,6 +2,7 @@
 #include"vertexShader.h"
 #include "buffer_objects.h"
 #include "Shapes.h"
+#include <thread>
 
 
 void pushVectors(std::vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec2 d) {
@@ -129,6 +130,9 @@ GLuint loadTexture(std::string filepath , int flip ) {
 
 void keplar(sf::RenderWindow& win) {
 
+	
+	
+
 	bool running = win.isOpen();
 
 	glm::mat4  trans = glm::mat4(1.0f);
@@ -192,7 +196,8 @@ void keplar(sf::RenderWindow& win) {
 
 
 
-
+	/*Button exit;
+	exit.create(600, 600, 400, 400, "exit.png");*/
 
 
 
@@ -233,6 +238,9 @@ void keplar(sf::RenderWindow& win) {
 		while (win.pollEvent(winEvent)) {
 			if (winEvent.type == sf::Event::Closed) {
 				running = false;
+				win.close();
+				
+				
 				return ;
 			}
 
@@ -289,15 +297,35 @@ void keplar(sf::RenderWindow& win) {
 
 		c1.update();
 
+		
+		/*if (exit.onButton(win))
+		{
+			menuscreen(win);
+		}
+
+		exit.drawButton(win);*/
+
+		
+
 
 
 		win.display();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		
+
 	}
+
+	
+
 }
 
 void physics(sf::RenderWindow& win) {
 	bool running = win.isOpen();
+
+	Button exit;
+	exit.create(870, 850, 100, 40, "exit.png");
+	
 
 	glm::mat4 proj = glm::perspective<float>(glm::radians(75.0), 1280.0 / 960.0f, .25, 400);
 	
@@ -390,7 +418,11 @@ void physics(sf::RenderWindow& win) {
 		while (win.pollEvent(winEvent)) {
 			if (winEvent.type == sf::Event::Closed) {
 				running = false;
+				win.close();
+				
 				return;
+				
+				
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -438,10 +470,10 @@ void physics(sf::RenderWindow& win) {
 			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 		}
 
+
 		
 
 		c1.update();
-
 
 
 		win.display();
@@ -450,7 +482,8 @@ void physics(sf::RenderWindow& win) {
 }
 
 
-void LA(sf::RenderWindow& win) {
+void LA(sf::RenderWindow& win)
+{
 
 	bool running = win.isOpen();
 
@@ -542,6 +575,8 @@ void LA(sf::RenderWindow& win) {
 		while (win.pollEvent(winEvent)) {
 			if (winEvent.type == sf::Event::Closed) {
 				running = false;
+				win.close();
+				
 				return;
 			}
 			
@@ -641,6 +676,14 @@ void LA(sf::RenderWindow& win) {
 
 		c1.update(rot_matrix);
 
+		/*Button exit;
+		exit.create(870, 850, 100, 40, "exit.png");
+		if (exit.onButton(win))
+		{
+			menuscreen(win);
+		}
+		
+		exit.drawButton(win);*/
 		win.display();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
@@ -652,4 +695,191 @@ void LA(sf::RenderWindow& win) {
 
 void print(glm::vec3 x) {
 	std::cout << x.x << " " << x.y << " " << x.z << "\n";
+}
+
+int menuscreen(sf::RenderWindow &win)
+{
+
+	
+
+	sf::RectangleShape background(sf::Vector2f(750.0f, 900.0f));
+	background.setPosition(260.0f, 0.0f);
+	sf::Texture nightsky;
+	nightsky.loadFromFile("3d_xplore.png");
+	background.setTexture(&nightsky);
+
+
+	Button bounce, la, planet, graph, exit, return_to_menu;
+
+	system("cls");
+	bounce.create(xthresh, ythresh + 80 * 0, 200, 80, "bb.png");
+	la.create(xthresh, ythresh + 80 * 1 + 10, 200, 80, "la.png");
+	planet.create(xthresh, ythresh + 80 * 2 + 20, 200, 80, "planets.png");
+	graph.create(xthresh, ythresh + 80 * 3 + 30, 200, 80, "graph.png");
+	exit.create(870, 850, 100, 40, "exit.png");
+	return_to_menu.create(870, 850, 100, 40, "exit.png");
+
+
+	sf::ContextSettings set = windowInit();
+	
+
+	
+
+	int bounce_clk = 0, graph_clk = 0, planet_clk = 0, la_clk = 0, exit_clk = 0, return_clk = 0;
+
+	while (win.isOpen())
+	{
+		sf::Event eve;
+		while (win.pollEvent(eve))
+		{
+			bounce_clk = bounce.onButton(win);
+			if (bounce_clk)
+			{
+				bounce_clk = 0;
+
+				win.close();
+				
+				return 1;
+
+			}
+			
+
+
+			planet_clk = planet.onButton(win);
+			if (planet_clk)
+			{
+				planet_clk = 0;
+
+				win.close();
+				return 2;
+				
+				
+				
+				
+			}
+			
+
+			la_clk = la.onButton(win);
+			if (la_clk)
+			{
+				la_clk = 0;
+
+				win.close();
+				return 3;
+			}
+			exit_clk = exit.onButton(win);
+			if (exit_clk)
+			{
+				win.close();
+				return 0;
+			}
+
+			
+			
+			if (eve.type == sf::Event::Closed)
+			{
+				win.close();
+			}
+
+
+		}
+		win.clear();
+		win.draw(background);
+		bounce.drawButton(win);
+		la.drawButton(win);
+		planet.drawButton(win);
+		graph.drawButton(win);
+		exit.drawButton(win);
+		
+		
+		//win.draw(text);
+		win.display();
+	}
+}
+
+void featuremenu1(sf::RenderWindow& win)
+{
+	sf::RectangleShape background2(sf::Vector2f(750.0f, 900.0f));
+	background2.setPosition(260.0f, 0.0f);
+	sf::Texture menu_bg1;
+	menu_bg1.loadFromFile("bounce_menu.png");
+	background2.setTexture(&menu_bg1);
+
+	while (win.isOpen())
+	{
+		sf::Event eve;
+		while(win.pollEvent(eve))
+		{
+			if (eve.type == sf::Event::MouseButtonPressed)
+			{
+				std::cout << "Hey\n";
+			}
+			if (eve.type == sf::Event::Closed)
+			{
+				win.close();
+			}
+
+		}
+		win.clear();
+		win.draw(background2);
+		win.display();
+	}
+}
+
+void featuremenu2(sf::RenderWindow& win)
+{
+	sf::RectangleShape background2(sf::Vector2f(750.0f, 900.0f));
+	background2.setPosition(260.0f, 0.0f);
+	sf::Texture menu_bg2;
+	menu_bg2.loadFromFile("planet_menu.png");
+	background2.setTexture(&menu_bg2);
+
+	while (win.isOpen())
+	{
+		sf::Event eve;
+		while (win.pollEvent(eve))
+		{
+			if (eve.type == sf::Event::MouseButtonPressed)
+			{
+				std::cout << "Hey\n";
+			}
+			if (eve.type == sf::Event::Closed)
+			{
+				win.close();
+			}
+
+		}
+		win.clear();
+		win.draw(background2);
+		win.display();
+	}
+}
+
+void featuremenu3(sf::RenderWindow& win)
+{
+	sf::RectangleShape background3(sf::Vector2f(750.0f, 900.0f));
+	background3.setPosition(260.0f, 0.0f);
+	sf::Texture menu_bg3;
+	menu_bg3.loadFromFile("la_menu.png");
+	background3.setTexture(&menu_bg3);
+
+	while (win.isOpen())
+	{
+		sf::Event eve;
+		while (win.pollEvent(eve))
+		{
+			if (eve.type == sf::Event::MouseButtonPressed)
+			{
+				std::cout << "Hey\n";
+			}
+			if (eve.type == sf::Event::Closed)
+			{
+				win.close();
+			}
+
+		}
+		win.clear();
+		win.draw(background3);
+		win.display();
+	}
 }
