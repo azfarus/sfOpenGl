@@ -339,7 +339,7 @@ public:
 	//Constructor
 
 	graph(GLint shader, glm::vec3 color, std::string filepath = "default.png") : base_shape(shader, color, filepath) {
-		std::cout << "Enter Type: ";
+		std::cout << "Enter Type: \n1. Sine\n2. Cosine\n3. Cubic\n4. Ellipse\n";
 		std::cin >> type;
 		genVertices(type);
 	}
@@ -508,6 +508,9 @@ public:
 		float sqA = a * a;
 		float sqB = b * b;
 		float sqC = c * c;
+		//std::cout << getA() << std::endl;
+		//std::cout << getB() << std::endl;
+		//std::cout << getC() << std::endl;
 
 		const float factor = (abs(fin_x - init_x) / sharpness);
 		for (float x = init_x; x < fin_x; x += factor) {
@@ -566,18 +569,22 @@ public:
 		switch (t)
 		{
 		case 1:
+			setParameters();
 			pushSin(buffer, -10, 10, -10, 10, 100);//sinx
 			buffer_pointer = &buffer[0];
 			break;
 		case 2:
+			setParameters();
 			pushCos(buffer, -10, 10, -10, 10, 100);//cosx
 			buffer_pointer = &buffer[0];
 			break;
 		case 3:
+			setParameters();
 			pushCubic(buffer, -10, 10, -10, 10, 100);//Cubic
 			buffer_pointer = &buffer[0];
 			break;
 		case 4:
+			setParameters();
 			pushEll(buffer, -10, 10, -10, 10, 100);//Ellipse
 			buffer_pointer = &buffer[0];
 		}

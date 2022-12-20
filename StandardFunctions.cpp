@@ -572,11 +572,8 @@ void LA(sf::RenderWindow& win)
 	glm::vec3 row1, row2, row3;
 	for (int i = 0; i < 3; i++)
 	{
-		for (int j = 0; j < 3; j++)
-		{
-			std::cout << "Enter the elements of row no." << i + 1 << " of a 3x3 matrix : ";
-			std::cin >> r1 >> r2 >> r3;
-		}
+		std::cout << "Enter the elements of row no." << i + 1 << " of a 3x3 matrix : ";
+		std::cin >> r1 >> r2 >> r3;
 		if (i == 0)
 		{
 			row1.x = r1;
@@ -1005,15 +1002,28 @@ void GraphPlotter(sf::RenderWindow& win)
 	camera c1(shaderProgram);
 	light_source ll(0.1, shaderProgram, "sun.jpg");
 	ll.position(0, 0, 50);
+	
+	/*line l2(glm::vec3(0, 0, 0), glm::vec3(-50, 0, 0), glm::vec3(1, 0, 0), shaderProgram);*/
 	graph gr(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg");
-	gr.setParameters();
 
 
 	float i = 0, j = 0, k = 0, theta = 0, fov = 75, look_at = 40;
 	bool view_flag = false;
 	while (running)
 	{
-
+		int j = -25;
+		int p = 0;
+		line* l[50];
+		for (int i = 50; i >= 0; i -= 5)
+		{
+			l[p] = new line(glm::vec3(-50, j, 0), glm::vec3(50, j, 0), glm::vec3(1, 1, 1), shaderProgram);
+			l[p]->draw();
+			p++;
+			l[p] = new line(glm::vec3(j, -50, 0), glm::vec3(j, 50, 0), glm::vec3(1, 1, 1), shaderProgram);
+			l[p]->draw();
+			j += 5;
+		}
+		//l2.draw();
 		ll.draw();
 		gr.draw();
 
