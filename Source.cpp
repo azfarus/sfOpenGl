@@ -71,7 +71,16 @@ int main() {
 	}
 	else if (x == 4)
 	{
-		//for graph
+		sf::RenderWindow mwin(sf::VideoMode(1280, 960), "Xplore", sf::Style::Close);
+		mwin.setActive(false);
+		std::thread thread1(&featuremenu3, std::ref(mwin));
+
+
+
+		sf::RenderWindow fwin(sf::VideoMode(1280, 960), "Features", sf::Style::Close, set);
+		glewExperimental = GL_TRUE;
+		glewInit();
+		obj_load(fwin);
 	}
 		
 

@@ -139,4 +139,4 @@ int menuscreen(sf::RenderWindow& win );
 void featuremenu1(sf::RenderWindow& win , data_object &d);
 void featuremenu2(sf::RenderWindow& win);
 void featuremenu3(sf::RenderWindow& win);
-
+void obj_load(sf::RenderWindow& win);

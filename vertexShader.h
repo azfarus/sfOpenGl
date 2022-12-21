@@ -28,7 +28,7 @@ vec3 norm = vec3(rot_scale*vec4(normal , 1));
 vec3 crntpos = normalize(camera-pos);
 
 float light = max(dot(crntpos , norm),0) ;
-float x = 0.0;
+float x = 0.2;
 Colour = (light+x)*colour;
 flat_color = colour;
 
@@ -52,6 +52,9 @@ void main()
 vec4 tex_vec = texture2D(glsmp ,UV );
 if(glpointt ==1){
 outColor =   vec4(flat_color, 1);
+}
+else if(glpointt ==2){
+outColor =   vec4(Colour, 1);
 }
 else outColor = tex_vec *  vec4(Colour, 1);
 }

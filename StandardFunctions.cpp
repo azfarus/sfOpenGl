@@ -541,6 +541,8 @@ void LA(sf::RenderWindow& win)
 	line l( glm::vec3(0, 0, 0), glm::vec3(50, 0, 0), glm::vec3(1, 0, 0), shaderProgram);
 	line ly(glm::vec3(0, 0, 0), glm::vec3(0, 50, 0), glm::vec3(0, 1, 0), shaderProgram);
 	line lz(glm::vec3(0, 0, 0), glm::vec3(0, 0, 50), glm::vec3(0, 0, 1), shaderProgram);
+	obj_file obs(shaderProgram);
+
 
 	glm::mat4x4 rot_matrix(1.0f);
 
@@ -566,7 +568,7 @@ void LA(sf::RenderWindow& win)
 		l.draw();
 		ly.draw();
 		lz.draw();
-
+		obs.draw();
 
 
 
@@ -688,6 +690,235 @@ void LA(sf::RenderWindow& win)
 	}
 }
 
+void obj_load(sf::RenderWindow& win)
+{
+
+	bool running = win.isOpen();
+
+	glm::mat4  trans = glm::mat4(1.0f);
+	glm::mat4 proj = glm::perspective<float>(glm::radians(75.0), 1280.0 / 960.0f, .25, 400);
+	
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+
+
+
+
+	VAO a;
+	a.bind();
+	VBO b;
+	b.bind();
+	EBO e;
+	e.bind();
+	GLuint shaderProgram = shaderSet();
+
+	attribute pos(shaderProgram, "position", 0),
+		col(shaderProgram, "colour", 3),
+		norm(shaderProgram, "normal", 6),
+		uv(shaderProgram, "uv", 9);
+
+	pos.enable();
+	col.enable();
+	norm.enable();
+	uv.enable(2);
+
+
+	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
+	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
+	GLint light = glGetUniformLocation(shaderProgram, "camera");
+
+
+
+
+
+
+
+
+
+
+	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+
+
+
+
+	
+	
+	light_source sun(2 , shaderProgram, "sun.jpg") , sun2(2, shaderProgram, "sun.jpg");
+
+	char filename[128];
+	std::cout << "Enter Filename: ";
+	std::cin >> filename;
+	obj_file obs(shaderProgram , filename);
+
+
+	
+
+
+	
+
+	sun.position(0, 0, 100);
+	sun2.position(0, 100, 0);
+	camera2 c1(shaderProgram);
+
+	c1.set_position(glm::vec4(10, 10, 10 , 1));
+
+	float i = 0, j = 0, k = 0, theta = 0, fov = 75, look_at = 40;
+	bool view_flag = false, state = false;
+	while (running)
+	{
+
+		
+		
+		sun2.draw();
+		obs.draw();
+
+
+		sf::Event winEvent;
+		while (win.pollEvent(winEvent)) {
+			if (winEvent.type == sf::Event::Closed) {
+				running = false;
+				win.close();
+
+				return;
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+				c1.rotate_camera_horizontal(1);
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				c1.rotate_camera_horizontal(-1 );
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				c1.rotate_camera_vertical(1);
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				c1.rotate_camera_vertical(-1);
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+				{
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(1, 0, 0));
+					obs.rotate(1, glm::vec3(1, 0, 0));
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+				{
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 1, 0));
+					obs.rotate(1, glm::vec3(0, 1, 0));
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+				{
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 0, 1));
+					obs.rotate(1, glm::vec3(0, 0, 1));
+
+				}
+
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+				{
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(1, 0, 0));
+					obs.rotate(-1, glm::vec3(1, 0, 0));
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+				{
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 1, 0));
+					obs.rotate(-1, glm::vec3(0, 1, 0));
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+				{
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 0, 1));
+					obs.rotate(-1, glm::vec3(0, 0, 1));
+
+				}
+
+
+
+			}
+			else if (winEvent.type == sf::Event::MouseWheelMoved ) {
+				if (winEvent.mouseWheel.delta > 0 ) {
+
+					c1.move_position(-1 , 10);
+				}
+				else if (winEvent.mouseWheel.delta < 0 ) {
+					c1.move_position(1 , 10);
+				}
+			}
+			
+				if ( sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+
+					c1.move_position(-1, 2);
+				}
+				else if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+					c1.move_position(1, 2);
+				}
+				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+					c1.move_position_side(-1, 2);
+				}
+				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+					c1.move_position_side(1, 2);
+				}
+				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+					c1.move_position_up(-1, 2);
+				}
+				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+					c1.move_position_up(1, 2);
+				}
+			
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				c1.reset();
+			}
+
+
+			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+			
+			
+			
+		}
+
+
+
+
+
+
+		c1.update(); /// pass rot matrix
+
+		/*Button exit;
+		exit.create(870, 850, 100, 40, "exit.png");
+		if (exit.onButton(win))
+		{
+			menuscreen(win);
+		}
+
+		exit.drawButton(win);*/
+
+		win.display();
+		
+		glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+		
+	}
+}
+
 
 
 
@@ -766,6 +997,17 @@ int menuscreen(sf::RenderWindow &win)
 				win.close();
 				return 3;
 			}
+
+			graph_clk = graph.onButton(win);
+
+			if (graph_clk)
+			{
+				graph_clk = 0;
+
+				win.close();
+				return 4;
+			}
+
 			exit_clk = exit.onButton(win);
 			if (exit_clk)
 			{
