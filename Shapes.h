@@ -508,9 +508,9 @@ public:
 		float sqA = a * a;
 		float sqB = b * b;
 		float sqC = c * c;
-		//std::cout << getA() << std::endl;
-		//std::cout << getB() << std::endl;
-		//std::cout << getC() << std::endl;
+		std::cout << getA() << std::endl;
+		std::cout << getB() << std::endl;
+		std::cout << getC() << std::endl;
 
 		const float factor = (abs(fin_x - init_x) / sharpness);
 		for (float x = init_x; x < fin_x; x += factor) {
@@ -560,8 +560,8 @@ public:
 
 			}
 		}
-
 	}
+
 	void genVertices(int t) {
 		buffer.clear();
 		if (buffer.size() > 0) return;
@@ -609,4 +609,23 @@ public:
 
 
 	}
+	void drawEllipsoid()
+	{
+		glBegin(GL_POINTS);
+		const int RESOLUTION = 50;
+		const float PI = 3.1416F;
+		for (int i = 0; i < RESOLUTION; ++i) {
+			float u = 2 * PI * i / RESOLUTION;
+			for (int j = 0; j < RESOLUTION; ++j) {
+				float v = PI * j / RESOLUTION;
+				float x = a * cos(u) * cos(v);
+				float y = b * sin(u) * cos(v);
+				float z = c * sin(v);
+
+				glVertex3f(x, y, z);
+			}
+		}
+		glEnd();
+	}
+
 };
