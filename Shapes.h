@@ -629,3 +629,92 @@ public:
 	}
 
 };
+//class obj_file :public base_shape
+//{
+//private:
+//	std::ifstream file;
+//	std::vector<glm::vec3> vertex, normal;
+//	std::vector<glm::vec2> uv;
+//public:
+//	obj_file(GLint shader):base_shape(shader , glm::vec3(1,1,1))
+//	{
+//		file.open("object.obj");
+//		parse();
+//	}
+//	obj_file(GLint shader , const char * filepath) :base_shape(shader, glm::vec3(1, 1, 1))
+//	{
+//		file.open(filepath);
+//		parse();
+//	}
+//
+//	void parse()
+//	{
+//		
+//		while(file.good())
+//		{
+//			std::string line;
+//			std::stringstream ss;
+//			std::getline(file, line);
+//			ss.str(line);
+//			if(line[0] == 'v' && line[1]==' ')
+//			{
+//				ss.ignore(1);
+//				float x, y, z;
+//				ss >> x >> y >> z;
+//				vertex.push_back(glm::vec3(x, y, z));
+//				//pushVectors(buffer, glm::vec3(x, y, z), color, glm::vec3(x, y, z), glm::vec2(.5, .5));
+//			}
+//			else if (line[0] == 'v' && line[1] == 'n')
+//			{
+//				ss.ignore(2);
+//				float x, y, z;
+//				ss >> x >> y >> z;
+//				normal.push_back(glm::vec3(x, y, z));
+//
+//			}
+//			else if (line[0] == 'f' && line[1] == ' ')
+//			{
+//				ss.ignore(1);
+//				int v[3], t[3] , n[3];
+//				for (int i = 0; i < 3; i++) {
+//					ss >> v[i];
+//					if (ss.peek() == '/') {
+//						ss.ignore(1);
+//						if (ss.peek() != '/') {
+//							ss >> t[i];
+//							
+//						}
+//						ss.ignore(1);
+//						ss >> n[i];
+//					}
+//					
+//				}
+//				
+//				
+//					for (int i = 0; i < 3; i++)
+//					{
+//						pushVectors(buffer, vertex[v[i] - 1], color, normal[n[i] - 1], glm::vec2(.5,.5));
+//					}
+//				
+//				
+//
+//			}
+//			
+//		}
+//		buffer_pointer = &buffer[0];
+//		vertex.clear();
+//		normal.clear();
+//	}
+//
+//	void draw()
+//	{
+//		tex.bind();
+//		glm::mat4 trans = pos * rot * scal;
+//		glUniform1i(this->glpoint, 2);
+//		
+//		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot * scal));
+//		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(pos*rot*scal));
+//		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
+//		glDrawArrays(GL_TRIANGLES, 0, buffer.size());
+//	}
+//};
