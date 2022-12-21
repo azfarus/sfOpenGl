@@ -15,6 +15,7 @@
 #include<chrono>
 #include<Windows.h>
 #include<vector>
+#include<mutex>
 
 #define xthresh 530
 #define ythresh 200
@@ -102,27 +103,28 @@ public:
 		window.draw(butt);
 	}
 };
-//class data_object
-//{
-//	int x;
-//	std::mutex m;
-//public:
-//	data_object()
-//	{
-//		x = 0;
-//
-//	}
-//	int get_x()
-//	{
-//		return x;
-//	}
-//	int set_x(int val)
-//	{
-//		m.lock();
-//		x = val;
-//		m.unlock();
-//	}
-//};
+
+class data_object
+{
+	int x;
+	std::mutex m;
+public:
+	data_object()
+	{
+		x = 0;
+
+	}
+	int get_x()
+	{
+		return x;
+	}
+	int set_x(int val)
+	{
+		m.lock();
+		x = val;
+		m.unlock();
+	}
+};
 
 void pushVectors(std::vector<float>& v, glm::vec3 a, glm::vec3 b, glm::vec3 c , glm::vec2 d);
 void pushvals(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness);

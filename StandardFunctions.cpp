@@ -611,285 +611,158 @@ void LA(sf::RenderWindow& win)
 
 	float i = 0, j = 0, k = 0, theta = 0, fov = 75, look_at = 40;
 	bool view_flag = false;
-//	while (running)
-//	{
-//		
-//		r.draw();
-//		l.draw();
-//		ly.draw();
-//		lz.draw();
-//
-//
-//
-//
-//		sf::Event winEvent;
-//		while (win.pollEvent(winEvent)) {
-//			if (winEvent.type == sf::Event::Closed) {
-//				running = false;
-//				win.close();
-//				
-//				return;
-//			}
-//			
-//			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-//			{
-//				c1.rotate_camera_horizontal(1);
-//
-//			}
-//			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-//			{
-//				c1.rotate_camera_horizontal(-1);
-//
-//
-//			}
-//			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-//			{
-//				c1.rotate_camera_vertical(1);
-//
-//
-//			}
-//			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-//			{
-//				c1.rotate_camera_vertical(-1);
-//
-//
-//			}
-//			else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-//			{
-//				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-//				{
-//					rot_matrix = glm::rotate( rot_matrix, glm::radians(.6f), glm::vec3(1, 0, 0));
-//
-//
-//				}
-//				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
-//				{
-//					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 1, 0));
-//
-//
-//				}
-//				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-//				{
-//					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 0, 1));
-//
-//
-//				}
-//
-//
-//				
-//			}
-//			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
-//			{
-//				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-//				{
-//					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(1, 0, 0));
-//
-//
-//				}
-//				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
-//				{
-//					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 1, 0));
-//
-//
-//				}
-//				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-//				{
-//					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 0, 1));
-//
-//
-//				}
-//				
-//
-//
-//			}
-//			else if (winEvent.type == sf::Event::MouseWheelMoved) {
-//				if (winEvent.mouseWheel.delta > 0) {
-//
-//					c1.move_position(true);
-//				}
-//				else if (winEvent.mouseWheel.delta < 0) {
-//					c1.move_position(false);
-//				}
-//			}
-//			
-//			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-//				c1.reset();
-//			}
-//
-//
-//			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
-//		}
-//
-//		
-//		
-//		
-//
-//
-//		c1.update(rot_matrix);
-//
-//		/*Button exit;
-//		exit.create(870, 850, 100, 40, "exit.png");
-//		if (exit.onButton(win))
-//		{
-//			menuscreen(win);
-//		}
-//		
-//		exit.drawButton(win);*/
-//		win.display();
-//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//	}
-//}
-while (running)
-{		
-	r.draw();
-	l.draw();
-	ly.draw();
-	lz.draw();
+
+	while (running)
+	{		
+		r.draw();
+		l.draw();
+		ly.draw();
+		lz.draw();
 
 
-	sf::Event winEvent;
-	while (win.pollEvent(winEvent)) {
-		if (winEvent.type == sf::Event::Closed) {
-			running = false;
-			win.close();
+		sf::Event winEvent;
+		while (win.pollEvent(winEvent)) {
+			if (winEvent.type == sf::Event::Closed) {
+				running = false;
+				win.close();
 
-			return;
-		}
+				return;
+			}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			c1.rotate_camera_horizontal(1);
-
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			c1.rotate_camera_horizontal(-1);
-
-
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		{
-			c1.rotate_camera_vertical(1);
-
-
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		{
-			c1.rotate_camera_vertical(-1);
-
-
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-				rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(1, 0, 0));
-				//obs.rotate(1, glm::vec3(1, 0, 0));
+				c1.rotate_camera_horizontal(1);
 
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 1, 0));
-				//obs.rotate(1, glm::vec3(0, 1, 0));
+				c1.rotate_camera_horizontal(-1);
+
 
 			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
-				rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 0, 1));
-				//obs.rotate(1, glm::vec3(0, 0, 1));
+				c1.rotate_camera_vertical(1);
+
 
 			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				c1.rotate_camera_vertical(-1);
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(1, 0, 0));
+					//obs.rotate(1, glm::vec3(1, 0, 0));
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 1, 0));
+					//obs.rotate(1, glm::vec3(0, 1, 0));
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 0, 1));
+					//obs.rotate(1, glm::vec3(0, 0, 1));
+
+				}
+
+
+
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(1, 0, 0));
+					//obs.rotate(-1, glm::vec3(1, 0, 0));
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 1, 0));
+					//obs.rotate(-1, glm::vec3(0, 1, 0));
+
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+				{
+					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 0, 1));
+					//obs.rotate(-1, glm::vec3(0, 0, 1));
+
+				}
+
+
+
+			}
+			else if (winEvent.type == sf::Event::MouseWheelMoved) {
+				if (winEvent.mouseWheel.delta > 0) {
+
+					c1.move_position(-1, 10);
+				}
+				else if (winEvent.mouseWheel.delta < 0) {
+					c1.move_position(1, 10);
+				}
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+
+				c1.move_position(-1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+				c1.move_position(1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+				c1.move_position_side(-1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+				c1.move_position_side(1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+				c1.move_position_up(-1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+				c1.move_position_up(1, 2);
+			}
+
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				c1.reset();
+			}
+
+
+			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
 
 
 
 		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+
+
+
+
+
+
+		c1.update(); /// pass rot matrix
+
+		/*Button exit;
+		exit.create(870, 850, 100, 40, "exit.png");
+		if (exit.onButton(win))
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-			{
-				rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(1, 0, 0));
-				//obs.rotate(-1, glm::vec3(1, 0, 0));
-
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
-			{
-				rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 1, 0));
-				//obs.rotate(-1, glm::vec3(0, 1, 0));
-
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-			{
-				rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 0, 1));
-				//obs.rotate(-1, glm::vec3(0, 0, 1));
-
-			}
-
-
-
-		}
-		else if (winEvent.type == sf::Event::MouseWheelMoved) {
-			if (winEvent.mouseWheel.delta > 0) {
-
-				c1.move_position(-1, 10);
-			}
-			else if (winEvent.mouseWheel.delta < 0) {
-				c1.move_position(1, 10);
-			}
+			menuscreen(win);
 		}
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+		exit.drawButton(win);*/
 
-			c1.move_position(-1, 2);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-			c1.move_position(1, 2);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-			c1.move_position_side(-1, 2);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			c1.move_position_side(1, 2);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-			c1.move_position_up(-1, 2);
-		}
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-			c1.move_position_up(1, 2);
-		}
+		win.display();
 
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-			c1.reset();
-		}
-
-
-		glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
-
-
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	}
-
-
-
-
-
-
-	c1.update(); /// pass rot matrix
-
-	/*Button exit;
-	exit.create(870, 850, 100, 40, "exit.png");
-	if (exit.onButton(win))
-	{
-		menuscreen(win);
-	}
-
-	exit.drawButton(win);*/
-
-	win.display();
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-}
 }
 
 
@@ -1151,7 +1024,7 @@ void GraphPlotter(sf::RenderWindow& win)
 		, glm::vec3(1, 1, 0));
 
 
-	camera c1(shaderProgram);
+	camera2 c1(shaderProgram);
 	light_source ll(0.1, shaderProgram, "sun.jpg");
 	ll.position(0, 0, 50);
 	
@@ -1184,6 +1057,8 @@ void GraphPlotter(sf::RenderWindow& win)
 		while (win.pollEvent(winEvent)) {
 			if (winEvent.type == sf::Event::Closed) {
 				running = false;
+				win.close();
+
 				return;
 			}
 
@@ -1215,19 +1090,19 @@ void GraphPlotter(sf::RenderWindow& win)
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
 				{
 					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(1, 0, 0));
-
+					//obs.rotate(1, glm::vec3(1, 0, 0));
 
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 				{
 					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 1, 0));
-
+					//obs.rotate(1, glm::vec3(0, 1, 0));
 
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 				{
 					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 0, 1));
-
+					//obs.rotate(1, glm::vec3(0, 0, 1));
 
 				}
 
@@ -1239,19 +1114,19 @@ void GraphPlotter(sf::RenderWindow& win)
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
 				{
 					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(1, 0, 0));
-
+					//obs.rotate(-1, glm::vec3(1, 0, 0));
 
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 				{
 					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 1, 0));
-
+					//obs.rotate(-1, glm::vec3(0, 1, 0));
 
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 				{
 					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 0, 1));
-
+					//obs.rotate(-1, glm::vec3(0, 0, 1));
 
 				}
 
@@ -1261,12 +1136,33 @@ void GraphPlotter(sf::RenderWindow& win)
 			else if (winEvent.type == sf::Event::MouseWheelMoved) {
 				if (winEvent.mouseWheel.delta > 0) {
 
-					c1.move_position(true);
+					c1.move_position(-1, 10);
 				}
 				else if (winEvent.mouseWheel.delta < 0) {
-					c1.move_position(false);
+					c1.move_position(1, 10);
 				}
 			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+
+				c1.move_position(-1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+				c1.move_position(1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+				c1.move_position_side(-1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+				c1.move_position_side(1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+				c1.move_position_up(-1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+				c1.move_position_up(1, 2);
+			}
+
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 				c1.reset();
@@ -1274,6 +1170,9 @@ void GraphPlotter(sf::RenderWindow& win)
 
 
 			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+
+
+
 		}
 
 
@@ -1281,12 +1180,22 @@ void GraphPlotter(sf::RenderWindow& win)
 
 
 
-		c1.update(rot_matrix);
+		c1.update(); /// pass rot matrix
+
+		/*Button exit;
+		exit.create(870, 850, 100, 40, "exit.png");
+		if (exit.onButton(win))
+		{
+			menuscreen(win);
+		}
+
+		exit.drawButton(win);*/
 
 		win.display();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
 
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	}
 
 
 }
