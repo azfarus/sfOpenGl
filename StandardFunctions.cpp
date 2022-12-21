@@ -428,7 +428,7 @@ void physics(sf::RenderWindow& win) {
 		ball.update(del, grav);
 		l.draw();
 		l2.draw();
-		l1.draw();
+	l1.draw();
 	
 
 		
@@ -882,22 +882,21 @@ int menuscreen(sf::RenderWindow &win)
 	}
 }
 
-void featuremenu1(sf::RenderWindow& win, data_object& d)
+void featuremenu1(sf::RenderWindow& win)
 {
 	sf::RectangleShape background2(sf::Vector2f(750.0f, 900.0f));
 	background2.setPosition(260.0f, 0.0f);
 	sf::Texture menu_bg1;
 	menu_bg1.loadFromFile("bounce_menu.png");
 	background2.setTexture(&menu_bg1);
-	int i = 0;
+
 	while (win.isOpen())
 	{
 		sf::Event eve;
-		while (win.pollEvent(eve))
+		while(win.pollEvent(eve))
 		{
 			if (eve.type == sf::Event::MouseButtonPressed)
 			{
-				d.set_x(i++);
 				std::cout << "Hey\n";
 			}
 			if (eve.type == sf::Event::Closed)
@@ -912,7 +911,7 @@ void featuremenu1(sf::RenderWindow& win, data_object& d)
 	}
 }
 
-void featuremenu2(sf::RenderWindow& win, data_object& d)
+void featuremenu2(sf::RenderWindow& win)
 {
 	sf::RectangleShape background2(sf::Vector2f(750.0f, 900.0f));
 	background2.setPosition(260.0f, 0.0f);
@@ -941,7 +940,7 @@ void featuremenu2(sf::RenderWindow& win, data_object& d)
 	}
 }
 
-void featuremenu3(sf::RenderWindow& win, data_object& d)
+void featuremenu3(sf::RenderWindow& win)
 {
 	sf::RectangleShape background3(sf::Vector2f(750.0f, 900.0f));
 	background3.setPosition(260.0f, 0.0f);
@@ -1239,7 +1238,19 @@ void obj_load(sf::RenderWindow& win)
 	GLint light = glGetUniformLocation(shaderProgram, "camera");
 
 
+
+
+
+
+
+
+
+
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+
+
+
+
 
 
 	light_source sun(2, shaderProgram, "sun.jpg"), sun2(2, shaderProgram, "sun.jpg");
@@ -1248,6 +1259,11 @@ void obj_load(sf::RenderWindow& win)
 	std::cout << "Enter Filename: ";
 	std::cin >> filename;
 	obj_file obs(shaderProgram, filename);
+
+
+
+
+
 
 
 	sun.position(0, 0, 100);
