@@ -128,7 +128,7 @@ GLuint loadTexture(std::string filepath , int flip ) {
 	
 }
 
-void keplar(sf::RenderWindow& win) {
+void keplar(sf::RenderWindow& win, data_object& d) {
 
 	
 	
@@ -332,7 +332,7 @@ void keplar(sf::RenderWindow& win) {
 
 }
 
-void physics(sf::RenderWindow& win) {
+void physics(sf::RenderWindow& win, data_object& d) {
 	bool running = win.isOpen();
 
 	Button exit;
@@ -526,7 +526,7 @@ void physics(sf::RenderWindow& win) {
 }
 
 
-void LA(sf::RenderWindow& win)
+void LA(sf::RenderWindow& win, data_object& d)
 {
 
 	bool running = win.isOpen();
@@ -907,7 +907,7 @@ int menuscreen(sf::RenderWindow &win)
 	}
 }
 
-void featuremenu1(sf::RenderWindow& win)
+void featuremenu1(sf::RenderWindow& win, data_object& d)
 {
 	sf::RectangleShape background2(sf::Vector2f(750.0f, 900.0f));
 	background2.setPosition(260.0f, 0.0f);
@@ -936,7 +936,7 @@ void featuremenu1(sf::RenderWindow& win)
 	}
 }
 
-void featuremenu2(sf::RenderWindow& win)
+void featuremenu2(sf::RenderWindow& win, data_object& d)
 {
 	sf::RectangleShape background2(sf::Vector2f(750.0f, 900.0f));
 	background2.setPosition(260.0f, 0.0f);
@@ -965,7 +965,7 @@ void featuremenu2(sf::RenderWindow& win)
 	}
 }
 
-void featuremenu3(sf::RenderWindow& win)
+void featuremenu3(sf::RenderWindow& win, data_object& d)
 {
 	sf::RectangleShape background3(sf::Vector2f(750.0f, 900.0f));
 	background3.setPosition(260.0f, 0.0f);
@@ -993,7 +993,7 @@ void featuremenu3(sf::RenderWindow& win)
 		win.display();
 	}
 }
-void GraphPlotter(sf::RenderWindow& win)
+void GraphPlotter(sf::RenderWindow& win, data_object& d)
 {
 	bool running = win.isOpen();
 
@@ -1224,7 +1224,7 @@ void GraphPlotter(sf::RenderWindow& win)
 
 
 }
-void obj_load(sf::RenderWindow& win)
+void obj_load(sf::RenderWindow& win, data_object& d)
 {
 
 	bool running = win.isOpen();

@@ -22,10 +22,10 @@ int main() {
 	int x = menuscreen(win);
 	if(x == 1)
 	{
-
+		data_object d;
 		sf::RenderWindow mwin(sf::VideoMode(1280, 960), "Xplore", sf::Style::Close);
 		mwin.setActive(false);
-		std::thread thread1(&featuremenu1, std::ref(mwin));
+		std::thread thread1(&featuremenu1, std::ref(mwin), std::ref(d));;
 		
 		
 
@@ -34,7 +34,7 @@ int main() {
 
 		glewExperimental = GL_TRUE;
 		glewInit();
-		physics(fwin);
+		physics(fwin, d);
 
 		
 
@@ -42,10 +42,10 @@ int main() {
 	}
 	else if(x == 2)
 	{
-
+		data_object d;
 		sf::RenderWindow mwin(sf::VideoMode(1280, 960), "Xplore", sf::Style::Close);
 		mwin.setActive(false);
-		std::thread thread2(&featuremenu2, std::ref(mwin));
+		std::thread thread2(&featuremenu2, std::ref(mwin), std::ref(d));
 
 
 		sf::RenderWindow fwin(sf::VideoMode(1280, 960), "Features", sf::Style::Close, set);
@@ -53,35 +53,36 @@ int main() {
 
 		glewExperimental = GL_TRUE;
 		glewInit();
-		keplar(fwin);
+		keplar(fwin, d);
 	}
 	else if(x == 3)
 	{
-
+		data_object d;
 		sf::RenderWindow mwin(sf::VideoMode(1280, 960), "Xplore", sf::Style::Close);
 		mwin.setActive(false);
-		std::thread thread2(&featuremenu2, std::ref(mwin));
+		std::thread thread2(&featuremenu2, std::ref(mwin), std::ref(d));
 
 		sf::RenderWindow fwin(sf::VideoMode(1280, 960), "Features", sf::Style::Close, set);
 
 
 		glewExperimental = GL_TRUE;
 		glewInit();
-		LA(fwin);
+		LA(fwin, d);
 	}
 	else if (x == 4)
 	{
 		//for graph
+		data_object d;
 		sf::RenderWindow mwin(sf::VideoMode(1280, 960), "Xplore", sf::Style::Close);
 		mwin.setActive(false);
-		std::thread thread2(&featuremenu2, std::ref(mwin));
+		std::thread thread2(&featuremenu2, std::ref(mwin), std::ref(d));
 
 		sf::RenderWindow fwin(sf::VideoMode(1280, 960), "Features", sf::Style::Close, set);
 
 
 		glewExperimental = GL_TRUE;
 		glewInit();
-		GraphPlotter(fwin);
+		GraphPlotter(fwin, d);
 	}
 		
 
