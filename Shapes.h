@@ -572,22 +572,22 @@ public:
 		{
 		case 1:
 			setParameters();
-			pushSin(buffer, -10, 10, -10, 10, 100);//sinx
+			pushSin(buffer, -10, 10, -10, 10, 200);//sinx
 			buffer_pointer = &buffer[0];
 			break;
 		case 2:
 			setParameters();
-			pushCos(buffer, -10, 10, -10, 10, 100);//cosx
+			pushCos(buffer, -10, 10, -10, 10, 200);//cosx
 			buffer_pointer = &buffer[0];
 			break;
 		case 3:
 			setParameters();
-			pushCubic(buffer, -10, 10, -10, 10, 100);//Cubic
+			pushCubic(buffer, -10, 10, -10, 10, 200);//Cubic
 			buffer_pointer = &buffer[0];
 			break;
 		case 4:
 			setParameters();
-			pushEll(buffer, -10, 10, -10, 10, 100);//Ellipse
+			pushEll(buffer, -10, 10, -10, 10, 200);//Ellipse
 			buffer_pointer = &buffer[0];
 		}
 

@@ -1061,17 +1061,17 @@ void GraphPlotter(sf::RenderWindow& win, data_object& d)
 	bool view_flag = false;
 	while (running)
 	{
-		int j = -25;
+		float j = -25;
 		int p = 0;
 		line* l[50];
-		for (int i = 50; i >= 0; i -= 2)
+		for (int i = 50; i >= 0; i -= 1)
 		{
-			l[p] = new line(glm::vec3(-50, j, 0), glm::vec3(50, j, 0), glm::vec3(1, 1, 1), shaderProgram);
+			l[p] = new line(glm::vec3(-50, j, 0), glm::vec3(50, j, 0), glm::vec3(.5, .5, .5), shaderProgram);
 			l[p]->draw();
 			p++;
-			l[p] = new line(glm::vec3(j, -50, 0), glm::vec3(j, 50, 0), glm::vec3(1, 1, 1), shaderProgram);
+			l[p] = new line(glm::vec3(j, -50, 0), glm::vec3(j, 50, 0), glm::vec3(.5, .5, .5), shaderProgram);
 			l[p]->draw();
-			j += 2;
+			j += 1;
 		}
 		//l2.draw();
 		ll.draw();
