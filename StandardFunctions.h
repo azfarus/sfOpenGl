@@ -15,6 +15,7 @@
 #include<chrono>
 #include<Windows.h>
 #include<vector>
+#include <sstream>
 
 #define xthresh 530
 #define ythresh 200
@@ -26,6 +27,7 @@ public:
 	int buttwidth, buttheight;
 	sf::RectangleShape butt;
 	sf::Texture n, f, p, jama;
+	int val;
 	/*sf::SoundBuffer buf;
 	sf::Sound click;*/
 
@@ -85,18 +87,40 @@ public:
 
 
 	}
-
-	/*void setTexture(std::string filename)
+	void changeval(float& theta, float inc)
 	{
+		theta += inc;
+	}
 
-		if (!jama.loadFromFile(filename))
-		{
-			std::cout << "Failed to load texture\n";
-		}
-		butt.setTexture(&jama);
-		return;
+	void drawtext(sf::RenderWindow& window, float& g)
+	{
+		sf::Text text;
+		sf::Font font;
+		font.loadFromFile("Montserrat.ttf");
+		text.setFont(font);
+		text.setCharacterSize(24);
+		text.setFillColor(sf::Color::Black);
+		text.setPosition(buttpos_x + buttwidth/2+10, buttpos_y + buttheight/2 -16 );
+		text.setStyle(sf::Text::Bold);
 
-	}*/
+
+		std::stringstream ss;
+		ss << g;
+		std::string str = ss.str();
+
+		// Set the text string to the variable value
+		text.setString(str);
+
+		// Draw the text
+		window.draw(text);
+
+		
+
+	}
+
+
+
+	
 	void drawButton(sf::RenderWindow& window)
 	{
 		window.draw(butt);
@@ -109,7 +133,7 @@ void pushvals(std::vector<float>& v, float init_x, float fin_x, float init_y, fl
 GLuint shaderSet();
 sf::ContextSettings windowInit();
 GLuint loadTexture(std::string filepath , int flip = 0);
-void keplar(sf::RenderWindow& win);
+void keplar(sf::RenderWindow& winv);
 void LA(sf::RenderWindow& win);
 void print(glm::vec3 x);
 void physics(sf::RenderWindow& win);
@@ -117,4 +141,5 @@ int menuscreen(sf::RenderWindow& win);
 void featuremenu1(sf::RenderWindow& win);
 void featuremenu2(sf::RenderWindow& win);
 void featuremenu3(sf::RenderWindow& win);
+void featuremenu4(sf::RenderWindow& win);
 void GraphPlotter(sf::RenderWindow& win);

@@ -865,25 +865,55 @@ void featuremenu1(sf::RenderWindow& win)
 	menu_bg1.loadFromFile("bounce_menu.png");
 	background2.setTexture(&menu_bg1);
 
+	Button g, up, down, exit;
+
+	system("cls");
+	g.create(550, 300, 150, 80, "g.png");
+	up.create(550, 250, 150, 40, "upswitch.png");
+	down.create(550, 390, 150, 40, "downswitch.png");
+	exit.create(870, 850, 100, 40, "exit.png");
+	int up_clk = 0, down_clk = 0;
+	float g_val = 9.8;
+
+
 	while (win.isOpen())
 	{
 		sf::Event eve;
-		while(win.pollEvent(eve))
+		while (win.pollEvent(eve))
 		{
-			if (eve.type == sf::Event::MouseButtonPressed)
+			up_clk = up.onButton(win);
+			if (up_clk)
 			{
-				std::cout << "Hey\n";
+				up_clk = 0;
+				std::cout << "gravitational acceleration(g) increased\n";
+				//rotation.changeval(&theta, 0.00005);
 			}
+			down_clk = down.onButton(win);
+			if (down_clk)
+			{
+				down_clk = 0;
+
+				std::cout << "gravitational acceleration(g) decreased\n";
+				//rotation.changeval(&theta, -0.00005);
+			}
+
+
 			if (eve.type == sf::Event::Closed)
 			{
 				win.close();
 			}
-
 		}
 		win.clear();
 		win.draw(background2);
+		g.drawButton(win);
+		g.drawtext(win, g_val);
+		up.drawButton(win);
+		exit.drawButton(win);
+		down.drawButton(win);
+
 		win.display();
 	}
+	
 }
 
 void featuremenu2(sf::RenderWindow& win)
@@ -894,15 +924,57 @@ void featuremenu2(sf::RenderWindow& win)
 	menu_bg2.loadFromFile("planet_menu.png");
 	background2.setTexture(&menu_bg2);
 
+	Button rotation, up, down, exit;
+
+	system("cls");
+	rotation.create(550, 600, 150, 80, "rotation.png");
+	up.create(550, 550, 150, 40, "upswitch.png");
+	down.create(550, 690, 150, 40, "downswitch.png");
+	exit.create(870, 850, 100, 40, "exit.png");
+	int up_clk = 0, down_clk = 0;
+
+	sf::Text text;
+	sf::Font font;
+	font.loadFromFile("Montserrat.ttf");
+	text.setFont(font);
+	text.setString("The solar system consists of the sun and the objects that orbit around it, including planets, moons, \nasteroids, and comets. There are eight planets in the solar system: Mercury, Venus, Earth, \nMars, Jupiter, Saturn, Uranus, and Neptune. \nPluto was once considered a planet, but it has since been reclassified as a dwarf planet.");
+	text.setCharacterSize(25);
+	text.setFillColor(sf::Color::White);
+	text.setPosition(50, 180);
+
+	sf::Text text2;
+	text2.setFont(font);
+	text2.setString("*PRESS R TO CHANGE THE VIEWING ANGLE*");
+	text2.setCharacterSize(30);
+	text2.setFillColor(sf::Color::White);
+	text2.setPosition(270, 360);
+	text2.setStyle(sf::Text::Bold);
+
+	
+
+
 	while (win.isOpen())
 	{
 		sf::Event eve;
 		while (win.pollEvent(eve))
 		{
-			if (eve.type == sf::Event::MouseButtonPressed)
+			up_clk = up.onButton(win);
+			if (up_clk)
 			{
-				std::cout << "Hey\n";
+				up_clk = 0;
+				std::cout << "Rotational speed increased\n";
+				//g.changeval(&g, 0.1);
 			}
+			down_clk = down.onButton(win);
+			if (down_clk)
+			{
+				down_clk = 0;
+				
+					std::cout << "Rotational speed decreased\n";
+					//g.changeval(&g, -0.1);
+			}
+
+
 			if (eve.type == sf::Event::Closed)
 			{
 				win.close();
@@ -911,6 +983,13 @@ void featuremenu2(sf::RenderWindow& win)
 		}
 		win.clear();
 		win.draw(background2);
+		rotation.drawButton(win);
+		up.drawButton(win);
+		down.drawButton(win);
+		exit.drawButton(win);
+		win.draw(text);
+		win.draw(text2);
+		
 		win.display();
 	}
 }
@@ -923,14 +1002,64 @@ void featuremenu3(sf::RenderWindow& win)
 	menu_bg3.loadFromFile("la_menu.png");
 	background3.setTexture(&menu_bg3);
 
+	sf::Text text;
+	sf::Font font;
+	font.loadFromFile("Montserrat.ttf");
+	text.setFont(font);
+	text.setString("The matrix in operation is:");
+	text.setCharacterSize(25);
+	text.setFillColor(sf::Color::White);
+	text.setPosition(50, 180);
+
+	sf::Text text2;
+	text2.setFont(font);
+	text2.setString("Instructions: \nr+x to rotate clockwise around x axis \nr+y to rotate clockwise around y axis \nr+z to rotate clockwise around z axis \nl+x to rotate counterclockwise around x axis \nl+y to rotate counterclockwise around y axis \nl+z to rotate counterclockwise around z axis");
+	text2.setCharacterSize(20);
+	text2.setFillColor(sf::Color::White);
+	text2.setPosition(80, 575);
+
+	sf::Text matt[3][3];
+	
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			matt[i][j].setFont(font);
+			matt[i][j].setCharacterSize(20);
+			matt[i][j].setFillColor(sf::Color::White);
+			matt[i][j].setPosition(100 + j * 50, 250 + i * 50);
+		}
+	}
+
+
+	//Linker object er theke asha matrix take ekhane x er moddhe dhukaish
+	glm::mat3 x(glm::vec3(1, 0, 1)
+		, glm::vec3(1, 0, 1)
+		, glm::vec3(1, 5, 0 ));
+
+	Button new_mat, exit;
+
+	system("cls");
+	new_mat.create(80, 450, 150, 80, "new_mat.png");
+	exit.create(870, 850, 100, 40, "exit.png");
+
+	int mat_clk = 0;
+
 	while (win.isOpen())
 	{
 		sf::Event eve;
 		while (win.pollEvent(eve))
 		{
-			if (eve.type == sf::Event::MouseButtonPressed)
+			mat_clk = new_mat.onButton(win);
+			if (mat_clk)
 			{
-				std::cout << "Hey\n";
+				mat_clk = 0;
+				for (int i = 0; i < 3; i++)
+				{
+					std::cout << "Enter the elements of row no." << i + 1 << " of a NEW 3x3 matrix : ";
+					std::cin >> x[i][0] >> x[i][1] >> x[i][2];
+				}
+				
 			}
 			if (eve.type == sf::Event::Closed)
 			{
@@ -938,11 +1067,168 @@ void featuremenu3(sf::RenderWindow& win)
 			}
 
 		}
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				std::stringstream ss;
+				ss << x[i][j];
+				std::string str = ss.str();
+				matt[i][j].setString(str);
+			}
+		}
 		win.clear();
 		win.draw(background3);
+		win.draw(text);
+		win.draw(text2);
+		exit.drawButton(win);
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				win.draw(matt[i][j]);
+			}
+		}
+		new_mat.drawButton(win);
 		win.display();
 	}
 }
+
+
+void featuremenu4(sf::RenderWindow& win)
+{
+	sf::RectangleShape background2(sf::Vector2f(750.0f, 900.0f));
+	background2.setPosition(260.0f, 0.0f);
+	sf::Texture menu_bg1;
+	menu_bg1.loadFromFile("graph_menu.png");
+	background2.setTexture(&menu_bg1);
+
+	sf::Text text;
+	sf::Font font;
+	font.loadFromFile("Montserrat.ttf");
+	text.setFont(font);
+	text.setCharacterSize(24);
+	text.setFillColor(sf::Color::White);
+	text.setPosition(100, 300);
+
+	int a = 1, b = 2, c = 3;
+
+	int graph_type = 1;
+
+	std::string str = "The equation of the graph is: ";
+
+	if (graph_type == 1)
+	{
+		std::stringstream ss;
+		ss << c;
+		str += ss.str();
+
+		str += "sinz = ";
+		std::stringstream ss2;
+		ss2 << a;
+		str += ss2.str();
+		str += "sinx + ";
+
+		std::stringstream ss3;
+		ss3 << b;
+		str += ss3.str();
+		str += "siny";
+		
+	}
+	else if (graph_type == 2)
+	{
+		std::stringstream ss;
+		ss << c;
+		str += ss.str();
+
+		str += "cosz = ";
+		std::stringstream ss2;
+		ss2 << a;
+		str += ss2.str();
+		str += "cosx + ";
+
+		std::stringstream ss3;
+		ss3 << b;
+		str += ss3.str();
+		str += "cosy";
+	
+
+	}
+	else if(graph_type == 3)
+	{
+		std::stringstream ss;
+		ss << c;
+		str += ss.str();
+
+		str += "z^3 = ";
+		std::stringstream ss2;
+		ss2 << a;
+		str += ss2.str();
+		str += "x^3 + ";
+
+		std::stringstream ss3;
+		ss3 << b;
+		str += ss3.str();
+		str += "y^3";
+	
+	}
+	else if (graph_type == 4)
+	{
+		str = "x^2/";
+		std::stringstream ss;
+		ss << a;
+		str += ss.str();
+
+		str += "^2 + y^2/";
+		std::stringstream ss2;
+		ss2 << b;
+		str += ss2.str();
+		str += "^2 + z^2/";
+
+		std::stringstream ss3;
+		ss3 << c;
+		str += ss3.str();
+		str += " = 1";
+
+
+	}
+
+	text.setString(str);
+
+	sf::Text text2;
+	text2.setFont(font);
+	text2.setString("Instructions: \nr+x to rotate clockwise around x axis \nr+y to rotate clockwise around y axis \nr+z to rotate clockwise around z axis \nl+x to rotate counterclockwise around x axis \nl+y to rotate counterclockwise around y axis \nl+z to rotate counterclockwise around z axis");
+	text2.setCharacterSize(20);
+	text2.setFillColor(sf::Color::White);
+	text2.setPosition(100, 575);
+
+	Button exit;
+	exit.create(870, 850, 100, 40, "exit.png");
+
+
+
+	while (win.isOpen())
+	{
+		sf::Event eve;
+		while (win.pollEvent(eve))
+		{
+			if (eve.type == sf::Event::Closed)
+			{
+				win.close();
+			}
+		}
+		win.clear();
+		win.draw(background2);
+		win.draw(text);
+		win.draw(text2);
+		exit.drawButton(win);
+		win.display();
+	}
+
+}
+
+
+
 void GraphPlotter(sf::RenderWindow& win)
 {
 	bool running = win.isOpen();
@@ -1119,6 +1405,7 @@ void GraphPlotter(sf::RenderWindow& win)
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 				c1.reset();
 			}
+
 
 
 			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
