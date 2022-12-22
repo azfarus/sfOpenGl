@@ -140,3 +140,4 @@ void featuremenu1(sf::RenderWindow& win);
 void featuremenu2(sf::RenderWindow& win);
 void featuremenu3(sf::RenderWindow& win);
 void GraphPlotter(sf::RenderWindow& win);
+void obj_load(sf::RenderWindow& win);

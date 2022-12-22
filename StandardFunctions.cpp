@@ -382,7 +382,7 @@ void physics(sf::RenderWindow& win) {
 	line l(glm::vec3(-100, 0, 0), glm::vec3(100, 0, 0), glm::vec3(1, 0, 0), shaderProgram);
 	line l2(glm::vec3(0, -100, 0), glm::vec3(0, 100, 0), glm::vec3(1, 1, 0), shaderProgram);
 
-	camera c1(shaderProgram);
+	camera2 c1(shaderProgram);
 
 	time_data prev_time, curr_time;
 	//PseudoPrompting for g
@@ -428,7 +428,7 @@ void physics(sf::RenderWindow& win) {
 		ball.update(del, grav);
 		l.draw();
 		l2.draw();
-	l1.draw();
+		l1.draw();
 	
 
 		
@@ -438,21 +438,18 @@ void physics(sf::RenderWindow& win) {
 			if (winEvent.type == sf::Event::Closed) {
 				running = false;
 				win.close();
-				
+
 				return;
-				
-				
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-
-				c1.rotate_camera_horizontal(-1);
+				c1.rotate_camera_horizontal(1);
 
 			}
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				c1.rotate_camera_horizontal(1);
+				c1.rotate_camera_horizontal(-1);
 
 
 			}
@@ -469,34 +466,62 @@ void physics(sf::RenderWindow& win) {
 
 			}
 			else if (winEvent.type == sf::Event::MouseWheelMoved) {
-				if (winEvent.mouseWheel.delta < 0) {
+				if (winEvent.mouseWheel.delta > 0) {
 
-					c1.move_position(true);
+					c1.move_position(-1, 10);
 				}
-				else if (winEvent.mouseWheel.delta > 0) {
-					c1.move_position(false);
+				else if (winEvent.mouseWheel.delta < 0) {
+					c1.move_position(1, 10);
 				}
 			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
-				view_flag = !view_flag;
-				c1 = camera(shaderProgram);
-				while (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
 
-				}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+
+				c1.move_position(-1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+				c1.move_position(1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+				c1.move_position_side(-1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+				c1.move_position_side(1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
+				c1.move_position_up(-1, 2);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+				c1.move_position_up(1, 2);
+			}
+
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				c1.reset();
 			}
 
 
 			glUniformMatrix4fv(projectionU, 1, GL_FALSE, glm::value_ptr(proj));
+
+
+
 		}
 
+		c1.update(); /// pass rot matrix
 
-		
+		/*Button exit;
+		exit.create(870, 850, 100, 40, "exit.png");
+		if (exit.onButton(win))
+		{
+			menuscreen(win);
+		}
 
-		c1.update();
-
+		exit.drawButton(win);*/
 
 		win.display();
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	}
 }
 
@@ -1039,14 +1064,14 @@ void GraphPlotter(sf::RenderWindow& win)
 		int j = -25;
 		int p = 0;
 		line* l[50];
-		for (int i = 50; i >= 0; i -= 5)
+		for (int i = 50; i >= 0; i -= 2)
 		{
 			l[p] = new line(glm::vec3(-50, j, 0), glm::vec3(50, j, 0), glm::vec3(1, 1, 1), shaderProgram);
 			l[p]->draw();
 			p++;
 			l[p] = new line(glm::vec3(j, -50, 0), glm::vec3(j, 50, 0), glm::vec3(1, 1, 1), shaderProgram);
 			l[p]->draw();
-			j += 5;
+			j += 2;
 		}
 		//l2.draw();
 		ll.draw();
