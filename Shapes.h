@@ -196,15 +196,15 @@ public:
 		radius = 2.0F;
 	}
 
-	void update(us_time del, float grav) {
+	void update(us_time del, float grav , int rnd =1) {
 		g = grav;
 		double delta = del.count() * 1e-6;
-		velocity += glm::vec3(0, 0, g * delta);
-
+		velocity += glm::vec3(0 , 0 , g * delta  );
+	
 		if (center.z < radius)
 		{
-			std::cout << radius << "  ";
-			print(center);
+			/*std::cout << radius << "  ";
+			print(center);*/
 			velocity = glm::reflect(velocity, glm::vec3(0, 0, 1));
 		}
 		space_coord += glm::vec3(velocity.x * delta, velocity.y * delta, velocity.z * delta);
@@ -648,7 +648,11 @@ public:
 		file.open(filepath);
 		parse();
 	}
-
+	obj_file(GLint shader, const char* filepath  , glm::vec3 color) :base_shape(shader, color)
+	{
+		file.open(filepath);
+		parse();
+	}
 	void parse()
 	{
 		
@@ -708,11 +712,11 @@ public:
 		normal.clear();
 	}
 
-	void draw()
+	void draw(int draw_type = 2)
 	{
 		tex.bind();
 		glm::mat4 trans = pos * rot * scal;
-		glUniform1i(this->glpoint, 2);
+		glUniform1i(this->glpoint, draw_type);
 		
 		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot * scal));
 		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(pos*rot*scal));

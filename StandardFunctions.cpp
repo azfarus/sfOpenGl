@@ -392,12 +392,12 @@ void physics(sf::RenderWindow& win, data_object& d) {
 	//For converting to minus
 	grav = 0 - grav;
 
-	
+	obj_file plane(shaderProgram , "plane.obj" , glm::vec3(.5 , .5 , 0.5));
 	
     
 	
 	
-	l1.position(100, 10, 0);
+	l1.position(100, 10, 100);
 
 	s.position(0, 0, 0);
 
@@ -407,11 +407,10 @@ void physics(sf::RenderWindow& win, data_object& d) {
 	curr_time = prev_time = std::chrono::steady_clock::now();
 	
 
+	c1.set_position(glm::vec4(10, 10, 10, 1));
 	
-	
-
-	float  theta = 0, fov = 75;
-	bool view_flag = 0;
+	plane.rotate(90, glm::vec3(1, 0, 0));
+	plane.scale(100, 100, 100);
 	while (running)
 	{
 
@@ -426,10 +425,8 @@ void physics(sf::RenderWindow& win, data_object& d) {
 		
 		
 		ball.update(del, grav);
-		l.draw();
-		l2.draw();
 		l1.draw();
-	
+		plane.draw(1);
 
 		
 		
@@ -1057,22 +1054,36 @@ void GraphPlotter(sf::RenderWindow& win, data_object& d)
 	graph gr(shaderProgram, glm::vec3(1, 1, 1), "moon.jpg");
 
 
-	float i = 0, j = 0, k = 0, theta = 0, fov = 75, look_at = 40;
+	
 	bool view_flag = false;
+
+
+	line* l[100];
+	line* m[100];
+	float j = -50;
+	int p = 0;
+	for (int i =0; i < 100; i ++)
+	{
+		l[i] = new line(glm::vec3(-50, j, 0), glm::vec3(50, j, 0), glm::vec3(.5, .5, .5), shaderProgram);
+		//l[p]->draw();
+		
+		m[i] = new line(glm::vec3(j, -50, 0), glm::vec3(j, 50, 0), glm::vec3(.5, .5, .5), shaderProgram);
+		//l[p]->draw();
+		j += 1;
+	}
+
+	p = 0;
+
 	while (running)
 	{
-		float j = -25;
-		int p = 0;
-		line* l[50];
-		for (int i = 50; i >= 0; i -= 1)
+
+		for(int i = 0 ; i < 100 ; i++)
 		{
-			l[p] = new line(glm::vec3(-50, j, 0), glm::vec3(50, j, 0), glm::vec3(.5, .5, .5), shaderProgram);
-			l[p]->draw();
-			p++;
-			l[p] = new line(glm::vec3(j, -50, 0), glm::vec3(j, 50, 0), glm::vec3(.5, .5, .5), shaderProgram);
-			l[p]->draw();
-			j += 1;
+			l[i]->draw();
+			m[i]->draw();
 		}
+		
+		
 		//l2.draw();
 		ll.draw();
 		gr.draw();

@@ -53,6 +53,9 @@ vec4 tex_vec = texture2D(glsmp ,UV );
 if(glpointt ==1){
 outColor =   vec4(flat_color, 1);
 }
+else if(glpointt ==2){
+outColor =   vec4(Colour, 1);
+}
 else outColor = tex_vec *  vec4(Colour, 1);
 }
 )glsl";

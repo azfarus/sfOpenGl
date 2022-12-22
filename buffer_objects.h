@@ -270,7 +270,7 @@ public:
 	{
 
 		cam_front = glm::rotate(glm::mat4x4(1.0f), glm::radians(sens * dir), glm::vec3(cam_horz)) * cam_front;
-		cam_up = glm::rotate(glm::mat4x4(1.0f), glm::radians(sens * dir), glm::vec3(cam_horz)) * cam_up;
+		//cam_up = glm::rotate(glm::mat4x4(1.0f), glm::radians(sens * dir), glm::vec3(cam_horz)) * cam_up;
 
 	}
 
