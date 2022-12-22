@@ -475,7 +475,7 @@ public:
 
 					m = x + arrx[i];
 					n = y + arry[i];
-					vertex[i] = glm::vec3(m, n, (a * (m * m * m) + b * (n * n * n))/c);
+					vertex[i] = glm::vec3(m, n, (cbrt(a * (m * m * m) + b * (n * n * n)))/c);
 				}
 				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
 				color = glm::vec3(1, 1, 1);
