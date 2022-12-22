@@ -383,7 +383,7 @@ public:
 
 					m = x + arrx[i];
 					n = y + arry[i];
-					vertex[i] = glm::vec3(m, n, asin(sin(m) + sin(n)));
+					vertex[i] = glm::vec3(m, n, (asin(a * sin(m) + b * sin(n)))/ c);
 				}
 				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
 				color = glm::vec3(1, 1, 1);
@@ -429,7 +429,7 @@ public:
 
 					m = x + arrx[i];
 					n = y + arry[i];
-					vertex[i] = glm::vec3(m, n, acos(cos(m) + cos(n)));
+					vertex[i] = glm::vec3(m, n, (acos(a*cos(m) + b*cos(n)))/c);
 				}
 				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
 				color = glm::vec3(1, 1, 1);
@@ -475,7 +475,7 @@ public:
 
 					m = x + arrx[i];
 					n = y + arry[i];
-					vertex[i] = glm::vec3(m, n, (m * m * m) + (n * n * n));
+					vertex[i] = glm::vec3(m, n, (a * (m * m * m) + b * (n * n * n))/c);
 				}
 				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
 				color = glm::vec3(1, 1, 1);
