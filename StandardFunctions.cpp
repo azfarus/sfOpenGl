@@ -760,15 +760,17 @@ int menuscreen(sf::RenderWindow &win)
 	background.setTexture(&nightsky);
 
 
-	Button bounce, la, planet, graph, exit, return_to_menu;
+	Button bounce, la, planet, graph, exit, return_to_menu, obj;
 
 	system("cls");
 	bounce.create(xthresh, ythresh + 80 * 0, 200, 80, "bb.png");
 	la.create(xthresh, ythresh + 80 * 1 + 10, 200, 80, "la.png");
 	planet.create(xthresh, ythresh + 80 * 2 + 20, 200, 80, "planets.png");
 	graph.create(xthresh, ythresh + 80 * 3 + 30, 200, 80, "graph.png");
+	obj.create(xthresh, ythresh + 80 * 4 + 40, 200, 80, "obj.png");
 	exit.create(870, 850, 100, 40, "exit.png");
 	return_to_menu.create(870, 850, 100, 40, "exit.png");
+	
 
 
 	sf::ContextSettings set = windowInit();
@@ -776,7 +778,7 @@ int menuscreen(sf::RenderWindow &win)
 
 	
 
-	int bounce_clk = 0, graph_clk = 0, planet_clk = 0, la_clk = 0, exit_clk = 0, return_clk = 0;
+	int bounce_clk = 0, graph_clk = 0, planet_clk = 0, la_clk = 0, exit_clk = 0, return_clk = 0, obj_clk = 0;
 
 	while (win.isOpen())
 	{
@@ -827,6 +829,16 @@ int menuscreen(sf::RenderWindow &win)
 				win.close();
 				return 4;
 			}
+
+			obj_clk = obj.onButton(win);
+			if (obj_clk)
+			{
+				obj_clk = 0;
+
+				win.close();
+				return 5;
+			}
+
 			exit_clk = exit.onButton(win);
 			if (exit_clk)
 			{
@@ -849,6 +861,7 @@ int menuscreen(sf::RenderWindow &win)
 		la.drawButton(win);
 		planet.drawButton(win);
 		graph.drawButton(win);
+		obj.drawButton(win);
 		exit.drawButton(win);
 		
 		
@@ -1224,6 +1237,37 @@ void featuremenu4(sf::RenderWindow& win)
 		exit.drawButton(win);
 		win.display();
 	}
+
+}
+
+void featuremenu5(sf::RenderWindow& win)
+{
+	sf::RectangleShape background2(sf::Vector2f(750.0f, 900.0f));
+	background2.setPosition(260.0f, 0.0f);
+	sf::Texture menu_bg1;
+	menu_bg1.loadFromFile("obj_menu.png");
+	background2.setTexture(&menu_bg1);
+
+	Button exit;
+	exit.create(870, 850, 100, 40, "exit.png");
+
+	while (win.isOpen())
+	{
+		sf::Event eve;
+		while (win.pollEvent(eve))
+		{
+			if (eve.type == sf::Event::Closed)
+			{
+				win.close();
+			}
+		}
+		win.clear();
+		win.draw(background2);
+		exit.drawButton(win);
+		win.display();
+
+	}
+
 
 }
 

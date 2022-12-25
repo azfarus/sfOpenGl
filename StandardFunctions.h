@@ -142,4 +142,5 @@ void featuremenu1(sf::RenderWindow& win);
 void featuremenu2(sf::RenderWindow& win);
 void featuremenu3(sf::RenderWindow& win);
 void featuremenu4(sf::RenderWindow& win);
+void featuremenu5(sf::RenderWindow& win);
 void GraphPlotter(sf::RenderWindow& win);
