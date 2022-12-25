@@ -16,6 +16,7 @@
 #include<Windows.h>
 #include<vector>
 #include<mutex>
+#include<sstream>
 
 #define xthresh 530
 #define ythresh 200
@@ -27,6 +28,7 @@ public:
 	int buttwidth, buttheight;
 	sf::RectangleShape butt;
 	sf::Texture n, f, p, jama;
+	int val;
 	/*sf::SoundBuffer buf;
 	sf::Sound click;*/
 
@@ -56,7 +58,7 @@ public:
 		if ((buttpos_x < mouse_x && buttpos_x + buttwidth > mouse_x) && (buttpos_y < mouse_y && buttpos_y + buttheight > mouse_y))
 		{
 			//butt.setTexture(&f);
-			////std::cout << "Button hovering\n";
+			//
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
@@ -68,36 +70,58 @@ public:
 				//click.play();
 				Sleep(200);
 				//window.close();
-
+				std::cout << "Button clicked\n";
 
 
 				return 1;
 			}
-			else
-			{
-				return 0;
-			}
+			
+				
+			
 		}
 		/*else
 		{
 			butt.setTexture(&n);
 			return 0;
 		}*/
+		return 0;
+
+
+	}
+	void changeval(float& theta, float inc)
+	{
+		theta += inc;
+	}
+
+	void drawtext(sf::RenderWindow& window, float& g)
+	{
+		sf::Text text;
+		sf::Font font;
+		font.loadFromFile("Montserrat.ttf");
+		text.setFont(font);
+		text.setCharacterSize(24);
+		text.setFillColor(sf::Color::Black);
+		text.setPosition(buttpos_x + buttwidth / 2 + 10, buttpos_y + buttheight / 2 - 16);
+		text.setStyle(sf::Text::Bold);
+
+
+		std::stringstream ss;
+		ss << g;
+		std::string str = ss.str();
+
+		// Set the text string to the variable value
+		text.setString(str);
+
+		// Draw the text
+		window.draw(text);
+
 
 
 	}
 
-	/*void setTexture(std::string filename)
-	{
 
-		if (!jama.loadFromFile(filename))
-		{
-			std::cout << "Failed to load texture\n";
-		}
-		butt.setTexture(&jama);
-		return;
 
-	}*/
+
 	void drawButton(sf::RenderWindow& window)
 	{
 		window.draw(butt);
@@ -106,23 +130,99 @@ public:
 
 class data_object
 {
-	int x;
+	//common
 	std::mutex m;
+	
+	
+	// bouncing balls
+	float g;
+
+	//LA
+	glm::mat3 la_matrix;
+
+	// keplar
+	float theta;
+
+	// graph
+	std::string math_expr_data;
+
+	
 public:
+	bool service;
+	bool exit;
 	data_object()
 	{
-		x = 0;
+		theta = 5e-6;
+		g = 9.8;
+		service = false;
+		exit = false;
+		la_matrix = glm::mat3(1.0f);
+	}
 
-	}
-	int get_x()
-	{
-		return x;
-	}
-	int set_x(int val)
+	void set_service(bool x)
 	{
 		m.lock();
-		x = val;
+			service = x;
 		m.unlock();
+	}
+
+	void set_math_expr(std::string val)
+	{
+		m.lock();
+		math_expr_data = val;
+		m.unlock();
+	}
+
+	std::string get_math_expr()
+	{
+		return math_expr_data;
+	}
+
+	void set_matrix(glm::mat3 x)
+	{
+		m.lock();
+		la_matrix = x;
+		m.unlock();
+	}
+
+	glm::mat3 get_matrix()
+	{
+		return la_matrix;
+	}
+
+	float get_g()
+	{
+		m.lock();
+		float x = g;
+		m.unlock();
+		return x;
+	}
+
+	void set_g(float val)
+	{
+		m.lock();
+		g = val;
+		m.unlock();
+	}
+
+
+	void set_exit(bool val)
+	{
+		m.lock();
+		exit = val;
+		m.unlock();
+	}
+
+	float get_theta()
+	{
+		return theta;
+	}
+	void set_theta(float val)
+	{
+		m.lock();
+		theta = val;
+		m.unlock();
+		
 	}
 };
 
@@ -136,8 +236,10 @@ void LA(sf::RenderWindow& win, data_object& d);
 void print(glm::vec3 x);
 void physics(sf::RenderWindow& win, data_object& d);
 int menuscreen(sf::RenderWindow& win);
-void featuremenu1(sf::RenderWindow& win, data_object& d);
-void featuremenu2(sf::RenderWindow& win, data_object& d);
-void featuremenu3(sf::RenderWindow& win, data_object& d);
+void featuremenu1( data_object& d);
+void featuremenu2( data_object& d);
+void featuremenu3( data_object& d);
+void featuremenu4( data_object& d);
+void featuremenu5( data_object& d);
 void GraphPlotter(sf::RenderWindow& win, data_object& d);
 void obj_load(sf::RenderWindow& win, data_object& d);

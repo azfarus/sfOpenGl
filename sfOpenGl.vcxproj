@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer_objects.h" />
+    <ClInclude Include="exprtk.hpp" />
     <ClInclude Include="Shapes.h" />
     <ClInclude Include="StandardFunctions.h" />
     <ClInclude Include="stb_image.h" />

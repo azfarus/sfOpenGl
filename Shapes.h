@@ -4,7 +4,7 @@
 #include<glm/gtc/random.hpp>
 #include <sstream>
 #include <fstream>
-
+#include "exprtk.hpp"
 
 class base_shape {
 
@@ -337,19 +337,21 @@ class graph : public base_shape {
 private:
 	int type;
 	float a, b, c;
+	std::string math_expression;
 public:
 	//Constructor
 
 	graph(GLint shader, glm::vec3 color, std::string filepath = "default.png") : base_shape(shader, color, filepath) {
-		std::cout << "Enter Type: \n1. Sine\n2. Cosine\n3. Cubic\n4. Ellipse\n";
-		std::cin >> type;
-		genVertices(type);
+		std::cout << "Enter the eqn z = ";
+		std::getline(std::cin, math_expression);
+		getchar();
+		genVertices(1);
 	}
 	//Setter Function
 	void setParameters()
 	{
 		std::cout << "Enter the values of a,b,c for the equations: ";
-		std::cin >> a >> b >> c;
+		std::cin >> a >> b >> c; getchar();
 	}
 	//Getter
 	float getA()
@@ -363,6 +365,11 @@ public:
 	float getC()
 	{
 		return c;
+	}
+
+	std::string get_math_expr()
+	{
+		return math_expression;
 	}
 
 	void pushSin(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness) {
@@ -384,6 +391,64 @@ public:
 					m = x + arrx[i];
 					n = y + arry[i];
 					vertex[i] = glm::vec3(m, n, (asin(a * sin(m) + b * sin(n)))/ c);
+				}
+				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
+				color = glm::vec3(1, 1, 1);
+				vex01 = vertex[1] - vertex[0];
+				vex02 = vertex[2] - vertex[0];
+				vex31 = vertex[1] - vertex[3];
+				vex32 = vertex[2] - vertex[3];
+
+				cp0 = glm::cross(vex31, vex32);
+				cp3 = glm::cross(vex02, vex01);
+				cp0 = glm::normalize(cp0);
+				cp3 = glm::normalize(cp3);
+				glm::vec2 uv(0, 0);
+				pushVectors(v, vertex[0], color, -cp0, uv);
+				pushVectors(v, vertex[1], color, -cp0, uv);
+				pushVectors(v, vertex[2], color, -cp0, uv);
+
+				pushVectors(v, vertex[3], color, -cp3, uv);
+				pushVectors(v, vertex[1], color, -cp3, uv);
+				pushVectors(v, vertex[2], color, -cp3, uv);
+
+
+
+			}
+		}
+
+	}
+
+	void pushexpression(std::vector<float>& v, float init_x, float fin_x, float init_y, float fin_y, float sharpness , std::string expression) {
+		// z = x + y 
+		v.clear();
+
+		exprtk::symbol_table<float> sym_table;
+		exprtk::expression<float> expr;
+		exprtk::parser<float> prsr;
+		float x, y;float m, n;
+		sym_table.add_variable("x" , m);
+		sym_table.add_variable("y", n);
+
+
+		expr.register_symbol_table(sym_table);
+
+		prsr.compile(expression, expr);
+
+		const float factor = (abs(fin_x - init_x) / sharpness);
+		for ( x = init_x; x < fin_x; x += factor) {
+			for ( y = init_y; y < fin_y; y += factor) {
+
+				glm::vec3 vertex[4];
+				float arrx[] = { factor , 0 , factor , 0 };
+				float arry[] = { factor , factor , 0 , 0 };
+				
+				for (int i = 0; i < 4; i++) {
+
+
+					m = x + arrx[i];
+					n = y + arry[i];
+					vertex[i] = glm::vec3(m, n, expr.value());
 				}
 				glm::vec3 vex01, vex02, vex31, vex32, cp0, cp3, color;
 				color = glm::vec3(1, 1, 1);
@@ -564,7 +629,7 @@ public:
 		}
 	}
 
-	void genVertices(int t) {
+	void genVertices(int t ) {
 		buffer.clear();
 		if (buffer.size() > 0) return;
 
@@ -572,7 +637,8 @@ public:
 		{
 		case 1:
 			setParameters();
-			pushSin(buffer, -10, 10, -10, 10, 200);//sinx
+			//pushSin(buffer, -10, 10, -10, 10, 200);//sinx
+			pushexpression(buffer, -10, 10, -10, 10, 200, math_expression);
 			buffer_pointer = &buffer[0];
 			break;
 		case 2:
