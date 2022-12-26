@@ -132,14 +132,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>E:\Sfml setups\glm-0.9.9.8\glm-0.9.9.8;E:\Sfml setups\glew-2.1.0-win32\glew-2.1.0\include\;E:\Sfml setups\SFML-2.5.1-windows-vc15-64-bit\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Sfml setups\glm-0.9.9.8\glm-0.9.9.8;E:\Sfml setups\glm-0.9.9.8\glm-0.9.9.8;D:\Sfml setups\glew-2.1.0-win32\glew-2.1.0\include\;E:\Sfml setups\glew-2.1.0-win32\glew-2.1.0\include\;D:\Sfml setups\SFML-2.5.1-windows-vc15-64-bit\SFML-2.5.1\include;E:\Sfml setups\SFML-2.5.1-windows-vc15-64-bit\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\Sfml setups\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;E:\Sfml setups\SFML-2.5.1-windows-vc15-64-bit\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Sfml setups\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;E:\Sfml setups\glew-2.1.0-win32\glew-2.1.0\lib\Release\x64;D:\Sfml setups\SFML-2.5.1-windows-vc15-64-bit\SFML-2.5.1\lib;E:\Sfml setups\SFML-2.5.1-windows-vc15-64-bit\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glew32s.lib;sfml-graphics-s.lib	;sfml-window-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;sfml-window-s.lib	;winmm.lib;gdi32.lib;sfml-audio-s.lib	;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;sfml-network-s.lib	;ws2_32.lib;sfml-system-s.lib	;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
