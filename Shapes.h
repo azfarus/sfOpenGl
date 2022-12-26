@@ -668,7 +668,7 @@ public:
 		tex.bind();
 		glm::mat4 trans = pos * rot * scal;
 		glUniform1i(this->glpoint, 2);
-
+		glUniformMatrix4fv(rot_scale, 1, GL_FALSE, glm::value_ptr(rot));
 		glUniformMatrix4fv(transformation, 1, GL_FALSE, glm::value_ptr(trans));
 		glBufferData(GL_ARRAY_BUFFER, buffer.size() * sizeof(float), buffer_pointer, GL_STATIC_DRAW);
 		glDrawArrays(GL_TRIANGLES, 0, buffer.size());

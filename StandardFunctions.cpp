@@ -1491,20 +1491,20 @@ void GraphPlotter(sf::RenderWindow& win, data_object& d)
 			{
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
 				{
-					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(1, 0, 0));
-					//obs.rotate(1, glm::vec3(1, 0, 0));
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(1, 0, 0));
+					gr.rotate(1, glm::vec3(1, 0, 0));
 
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 				{
-					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 1, 0));
-					//obs.rotate(1, glm::vec3(0, 1, 0));
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 1, 0));
+					gr.rotate(1, glm::vec3(0, 1, 0));
 
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 				{
-					rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 0, 1));
-					//obs.rotate(1, glm::vec3(0, 0, 1));
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(.6f), glm::vec3(0, 0, 1));
+					gr.rotate(1, glm::vec3(0, 0, 1));
 
 				}
 
@@ -1515,20 +1515,20 @@ void GraphPlotter(sf::RenderWindow& win, data_object& d)
 			{
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
 				{
-					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(1, 0, 0));
-					//obs.rotate(-1, glm::vec3(1, 0, 0));
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(1, 0, 0));
+					gr.rotate(-1, glm::vec3(1, 0, 0));
 
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 				{
-					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 1, 0));
-					//obs.rotate(-1, glm::vec3(0, 1, 0));
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 1, 0));
+					gr.rotate(-1, glm::vec3(0, 1, 0));
 
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 				{
-					rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 0, 1));
-					//obs.rotate(-1, glm::vec3(0, 0, 1));
+					//rot_matrix = glm::rotate(rot_matrix, glm::radians(-.6f), glm::vec3(0, 0, 1));
+					gr.rotate(-1, glm::vec3(0, 0, 1));
 
 				}
 
