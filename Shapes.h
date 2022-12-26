@@ -677,24 +677,7 @@ public:
 
 
 	}
-	void drawEllipsoid()
-	{
-		glBegin(GL_POINTS);
-		const int RESOLUTION = 50;
-		const float PI = 3.1416F;
-		for (int i = 0; i < RESOLUTION; ++i) {
-			float u = 2 * PI * i / RESOLUTION;
-			for (int j = 0; j < RESOLUTION; ++j) {
-				float v = PI * j / RESOLUTION;
-				float x = a * cos(u) * cos(v);
-				float y = b * sin(u) * cos(v);
-				float z = c * sin(v);
-
-				glVertex3f(x, y, z);
-			}
-		}
-		glEnd();
-	}
+	
 
 };
 class obj_file :public base_shape
