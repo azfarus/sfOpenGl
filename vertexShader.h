@@ -10,6 +10,7 @@ out vec3 Colour;
 out vec3 flat_color;
 out vec2 UV;
 
+uniform float amb;
 uniform mat4 rot_scale;
 uniform vec3 camera;
 uniform mat4 trans;
@@ -28,7 +29,7 @@ vec3 norm = vec3(rot_scale*vec4(normal , 1));
 vec3 crntpos = normalize(camera-pos);
 
 float light = max(dot(crntpos , norm),0) ;
-float x = 0.0;
+float x = amb;
 Colour = (light+x)*colour;
 flat_color = colour;
 

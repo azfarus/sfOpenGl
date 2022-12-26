@@ -171,6 +171,9 @@ void keplar(sf::RenderWindow& win, data_object& d) {
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
 	GLint light = glGetUniformLocation(shaderProgram, "camera");
+	GLint amb = glGetUniformLocation(shaderProgram, "amb");
+
+	glUniform1f(amb, 0);
 
 
 
@@ -378,6 +381,9 @@ void physics(sf::RenderWindow& win, data_object& d) {
 	uv.enable(2);
 
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
+	GLint amb = glGetUniformLocation(shaderProgram, "amb");
+
+	glUniform1f(amb, 0.1);
 	
 
 
@@ -777,7 +783,7 @@ void LA(sf::RenderWindow& win, data_object& d)
 
 
 
-		c1.update(); /// pass rot matrix
+		c1.update(rot_matrix); /// pass rot matrix
 
 		/*Button exit;
 		exit.create(870, 850, 100, 40, "exit.png");
@@ -1393,6 +1399,9 @@ void GraphPlotter(sf::RenderWindow& win, data_object& d)
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
 	GLint light = glGetUniformLocation(shaderProgram, "camera");
+	GLint amb = glGetUniformLocation(shaderProgram, "amb");
+
+	glUniform1f(amb, 0.3);
 
 
 
@@ -1647,6 +1656,9 @@ void obj_load(sf::RenderWindow& win, data_object& d)
 	GLint transformation = glGetUniformLocation(shaderProgram, "trans");
 	GLint projectionU = glGetUniformLocation(shaderProgram, "proj");
 	GLint light = glGetUniformLocation(shaderProgram, "camera");
+	GLint amb = glGetUniformLocation(shaderProgram, "amb");
+
+	glUniform1f(amb, 0.1);
 
 
 
